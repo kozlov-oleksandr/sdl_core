@@ -7,20 +7,17 @@ data to connected web socket clients.
 
 import os
 import logging
-import socket
 from datetime import datetime
 
-from tornado.web import Application, RequestHandler, asynchronous
+from tornado.web import Application
 from tornado.websocket import WebSocketHandler
-from tornado.iostream import SSLIOStream
 from tornado.ioloop import IOLoop
 from tornado import options
 
 from lib.stream_reader import SSLStreamReader
 
-
 log = logging.getLogger(__name__)
-port = 8080
+port = 8081
 tls_host = 'localhost'
 tls_port = 4443
 
@@ -33,11 +30,6 @@ class CustomReader(SSLStreamReader):
     @staticmethod
     def write_message(client, data):
         client.write_message(data)
-
-
-class RootHandler(RequestHandler):
-    def get(self):
-        self.render('index.html')
 
 
 class FeedHandler(WebSocketHandler):
@@ -54,7 +46,6 @@ settings = {
     'template_path': os.path.join(os.path.dirname(__file__), 'html')
 }
 routes = [
-    (r'/', RootHandler),
     (r'/feed', FeedHandler)
 ]
 
