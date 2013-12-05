@@ -54,12 +54,12 @@ MFT.FmModel = Em.Object.create({
         name: 'fm1',
 
 		items: {
-			0:MFT.PlaylistItem.create({frequency: '99.1',genre: 'Pop',title: 'BlUE SKY',artist: 'THE MAX', isHd: false}) ,
-			1:MFT.PlaylistItem.create({frequency: '98.8',genre: 'Club',title: 'JUMP AND DOWN',artist: 'THE PROJECT X', isHd: false}),
-			2:MFT.PlaylistItem.create({frequency: '100.9',genre: 'Rock',title: 'WELCOME HOME',artist: 'TODD SULLIVAN',isHd: MFT.SettingsModel.isEnglish, HDChannels: 3, currentHDChannel: 2}),
-			3:MFT.PlaylistItem.create({frequency: '103.5',genre: 'Pop',title: 'LETS DANCE',artist: 'MICHAEL JOHNSON',isHd: MFT.SettingsModel.isEnglish, HDChannels: 2, currentHDChannel: 1}),
-			4:MFT.PlaylistItem.create({frequency: '106.1',genre: 'Pop Rock',title: 'YESTERDAY NIGHT',artist: 'JOHN SMITH', isHd: false}),
-			5:MFT.PlaylistItem.create({frequency: '105.2',genreBinding: 'MFT.locale.label.view_media_genre_classic',title: 'TENTH SYMPHONY',artist: 'SPENCER M.', isHd: false})
+			0:MFT.PlaylistItem.create({frequency: '87.9',genre: 'Pop',title: 'BlUE SKY',artist: 'THE MAX', isHd: false}) ,
+			1:MFT.PlaylistItem.create({frequency: '90.9',genre: 'Club',title: 'JUMP AND DOWN',artist: 'THE PROJECT X', isHd: false}),
+			2:MFT.PlaylistItem.create({frequency: '105.1',genre: 'Rock',title: 'WELCOME HOME',artist: 'TODD SULLIVAN',isHd: false}),
+			3:MFT.PlaylistItem.create({frequency: '98.5',genre: 'Pop',title: 'LETS DANCE',artist: 'MICHAEL JOHNSON',isHd: false}),
+			4:MFT.PlaylistItem.create({frequency: '106.3',genre: 'Pop Rock',title: 'YESTERDAY NIGHT',artist: 'JOHN SMITH', isHd: false}),
+			5:MFT.PlaylistItem.create({frequency: '107.9',genre: 'Classic',title: 'TENTH SYMPHONY',artist: 'SPENCER M.', isHd: false})
 		}
 	}),
 	

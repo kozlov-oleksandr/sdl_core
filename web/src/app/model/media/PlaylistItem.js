@@ -24,16 +24,16 @@ MFT.PlaylistItem = Em.Object.extend({
     currentHDChannel: 0,
 	
 	/** frequency name */
-	frequency:'',
+	frequency: '',
 	
 	/** Song GENRE */
-	genre: 		null,
+	genre: 		'',
 	
 	/** Artist name */
-	artist:		null,
+	artist:		'',
 	
 	/** Song title */
-	title: null,
+	title: '',
 	
 	/** Logo image path for station */
 	logo: '',

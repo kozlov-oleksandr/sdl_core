@@ -76,9 +76,18 @@ MFT.FMView = Em.ContainerView.create(MFT.LoadableView,{
                 }.property('controler.currentActiveData'),
 
                 /** Formate Song name according to HD or non HD State of Station*/
-                songInfo: function(){
-                    if(this.controler.get('currentActiveData'))
-                        return  this.controler.get('currentActiveData').title + ' - ' +  this.controler.get('currentActiveData').artist;
+                songInfo: function() {
+                    var songInfo = this.controler.get('currentActiveData');
+
+                    if (!(songInfo.title && songInfo.artist)) {
+                        if (songInfo.title) {
+                            return songInfo.title;
+                        } else if (songInfo.artist) {
+                            return songInfo.artist;
+                        }
+                    } else {
+                        return songInfo.title + ' - ' + songInfo.artist;
+                    }
                 }.property('controler.currentActiveData')
             }),
 

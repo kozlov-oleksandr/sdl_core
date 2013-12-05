@@ -1794,9 +1794,9 @@
     text-transform: uppercase;
     position: absolute;
     font-size: 20px;
-    float: left;
     top: 148px;
     left: 15px;
+    width: 466px;
 }
 
 .fmInfoHdIco {
