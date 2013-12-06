@@ -1,6 +1,7 @@
 package com.ford.avarsdl.jsoncontroller;
 
 import com.ford.avarsdl.requests.CancelAccessCommand;
+import com.ford.avarsdl.requests.GetNativeLocalPresetsCommand;
 import com.ford.avarsdl.requests.GrantAccessCommand;
 import com.ford.avarsdl.requests.RequestCommand;
 import com.ford.avarsdl.requests.StartScanCommand;
@@ -39,9 +40,9 @@ public class JSONRevSDLController extends JSONController {
         RequestCommand requestCommand = commandsHashTable.get(method);
         if (requestCommand != null) {
             requestCommand.execute(mJSONParser.getId(), mJSONParser.getParams());
-        } else {
-            Logger.w(getClass().getSimpleName() + " unknown request");
-        }
+        } /*else {
+            Logger.w(getClass().getSimpleName() + " unknown request: " + method);
+        }*/
     }
 
     private void initializeCommandsTable() {
@@ -65,5 +66,8 @@ public class JSONRevSDLController extends JSONController {
 
         TuneDownCommand tuneDownCommand = new TuneDownCommand();
         commandsHashTable.put(Names.TuneDown, tuneDownCommand);
+
+        GetNativeLocalPresetsCommand getNativeLocalPresetsCommand = new GetNativeLocalPresetsCommand();
+        commandsHashTable.put(RPCConst.GetNativeLocalPresets, getNativeLocalPresetsCommand);
     }
 }

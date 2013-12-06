@@ -1,23 +1,29 @@
 package com.ford.avarsdl.jsoncontroller;
 
+import com.ford.avarsdl.requests.RequestCommand;
+import com.ford.avarsdl.requests.SetNativeLocalPresetsCommand;
 import com.ford.avarsdl.views.AvatarActivity;
 import com.ford.avarsdl.util.Logger;
 import com.ford.avarsdl.util.RPCConst;
 
+import java.util.Hashtable;
+
 public class JSONAVAController extends JSONController {
 
+    private final Hashtable<String, RequestCommand> commandsHashTable =
+            new Hashtable<String, RequestCommand>();
     private String mJSComponentName = null;
     private AvatarActivity mActivity;
 
-    public JSONAVAController(AvatarActivity activity, String cname) {
-        super(RPCConst.CN_AVATAR);
-        mActivity = activity;
-        mJSComponentName = cname;
+    public JSONAVAController(ITcpClient client) {
+        super(RPCConst.CN_AVATAR, client);
+        initializeCommandsTable();
     }
 
-    public JSONAVAController(String cname, ITcpClient client) {
-        super(RPCConst.CN_AVATAR, client);
-        mJSComponentName = cname;
+    public JSONAVAController(AvatarActivity activity, String componentName) {
+        this(null);
+        mActivity = activity;
+        mJSComponentName = componentName;
     }
 
     protected void processRequest(String request) {
@@ -54,14 +60,29 @@ public class JSONAVAController extends JSONController {
     }
 
     public void sendJSMessage(String cName, String jsonMsg) {
-        //Logger.d(getClass().getSimpleName() + " SendJSMessage : " + jsonMsg);
+        Logger.d(getClass().getSimpleName() + " SendJSMessage : " + jsonMsg);
         mJSONParser.putJSONObject(jsonMsg);
         if (mJSONParser.getId() >= 0 &&
                 mJSONParser.getResult() == null &&
                 mJSONParser.getError() == null) {
             mJSComponentName = cName;
         }
+
+        String method = mJSONParser.getMethod();
+        method = method.substring(method.indexOf('.') + 1, method.length());
+        RequestCommand requestCommand = commandsHashTable.get(method);
+        if (requestCommand != null) {
+            requestCommand.execute(mJSONParser.getId(), mJSONParser.getParams());
+        } /*else {
+            Logger.w(getClass().getSimpleName() + " unknown request: " + method);
+        }*/
+
         jsonMsg += System.getProperty("line.separator");
         sendJSONMsg(jsonMsg);
+    }
+
+    private void initializeCommandsTable() {
+        SetNativeLocalPresetsCommand setNativeLocalPresetsCommand = new SetNativeLocalPresetsCommand();
+        commandsHashTable.put(RPCConst.SetNativeLocalPresets, setNativeLocalPresetsCommand);
     }
 }

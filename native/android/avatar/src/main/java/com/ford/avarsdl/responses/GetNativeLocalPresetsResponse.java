@@ -19,7 +19,6 @@ public class GetNativeLocalPresetsResponse extends JSONController implements Res
     @Override
     public void execute(int id, String result) {
         Logger.d(getClass().getSimpleName() + " id: " + id + ", result: " + result);
-
-        //sendResponse(id, result);
+        sendResponse(id, result);
     }
 }

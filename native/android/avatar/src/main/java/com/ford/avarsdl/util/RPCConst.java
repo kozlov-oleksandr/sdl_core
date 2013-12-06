@@ -58,4 +58,8 @@ public class RPCConst {
 
 	public static final int ID_RANGE = 999;
 	public static final String TAG_SCALE = "scale";
+
+    // native internal command names (between android and web view)
+    public static final String GetNativeLocalPresets = "GetNativeLocalPresets";
+    public static final String SetNativeLocalPresets = "SetNativeLocalPresets";
 }

@@ -166,7 +166,7 @@ public class SDLService extends Service implements IProxyListenerALM {
     private void startProxy() {
         Logger.d(getClass().getSimpleName() + " Starting proxy ...");
 
-        SharedPreferences sharedPreferences = getSharedPreferences(Const.PREFS_NAME, 0);
+        SharedPreferences sharedPreferences = getSharedPreferences(Const.PREFS_NAME, MODE_PRIVATE);
         String ipAddressString = sharedPreferences.getString(Const.PREFS_KEY_IPADDR, Const.PREFS_DEFAULT_IPADDR);
         int tcpPortInt = sharedPreferences.getInt(Const.PREFS_KEY_TCPPORT, Const.PREFS_DEFAULT_TCPPORT);
 
