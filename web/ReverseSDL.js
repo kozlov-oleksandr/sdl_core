@@ -15,14 +15,20 @@ RevSDL = {
          * Sends a request for access to the management of head unit, through SDL interface
          **/
         GrantAccess: {
-
+            response: {
+                success: "boolean",
+                resultCode: "string"
+            }
         },
 
         /**
          * Sends a request for cancel access to the management of head unit, through SDL interface
          **/
         CancelAccess: {
-
+            response: {
+                success: "boolean",
+                resultCode: "string"
+            }
         },
 
         /**
@@ -42,19 +48,55 @@ RevSDL = {
          * Start frequency scan on head unit, through SDL interface
          **/
         StartScan: {
-
+            response: {
+                success: "boolean",
+                resultCode: "string"
+            }
         },
 
         /**
          * Stop frequency scan on head unit, through SDL interface
          **/
         StopScan: {
-
+            response: {
+                success: "boolean",
+                resultCode: "string"
+            }
         },
 
         /** Sends a request show application on HMI, through SDL interface**/
         Show: {
 
+        },
+
+        /** Sends a TuneUp request, through SDL interface**/
+        TuneUp: {
+            response: {
+                success: "boolean",
+                resultCode: "string"
+            }
+        },
+
+        /** Sends a TuneDown request, through SDL interface**/
+        TuneDown: {
+            response: {
+                success: "boolean",
+                resultCode: "string"
+            }
+        },
+
+        /** Get saved presets from native mobile app **/
+        GetNativeLocalPresets: {
+            response: {
+                customPresets: "array"
+            }
+        },
+
+        /** Save presets to native mobile app**/
+        SetNativeLocalPresets: {
+            parameters: {
+                customPresets: "array"
+            }
         }
     },
 
@@ -82,6 +124,12 @@ RevSDL = {
                     artist: "string",
                     genre: "string"
                 }
+            }
+        },
+
+        OnPresetsChanged: {
+            parameters: {
+                customPresets: "array"
             }
         }
     }

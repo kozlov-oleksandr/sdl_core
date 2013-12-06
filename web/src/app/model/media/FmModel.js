@@ -51,8 +51,6 @@ MFT.FmModel = Em.Object.create({
 	fm1: MFT.Playlist.create( {
 		selectedIndex: 					1,
 
-        name: 'fm1',
-
 		items: {
 			0:MFT.PlaylistItem.create({frequency: '87.9',genre: 'Pop',title: 'BlUE SKY',artist: 'THE MAX', isHd: false}) ,
 			1:MFT.PlaylistItem.create({frequency: '90.9',genre: 'Club',title: 'JUMP AND DOWN',artist: 'THE PROJECT X', isHd: false}),
@@ -66,8 +64,6 @@ MFT.FmModel = Em.Object.create({
 	fm2: MFT.Playlist.create( {
 		selectedIndex: 					4,
 
-        name: 'fm2',
-
         items:{
 			0:MFT.PlaylistItem.create({frequency: '101.1',genre: 'Club',title: 'SPRING TIME',artist: 'DJ SKY', isHd: false}) ,
 			1:MFT.PlaylistItem.create({frequency: '103.2',genre: 'Rock',title: 'RAINBOW',artist: 'THE BEES', isHd: false}),
@@ -80,8 +76,6 @@ MFT.FmModel = Em.Object.create({
 	
 	fmAst: MFT.Playlist.create( {				
 		selectedIndex: 					1,
-
-        name: 'fmAst',
 
         items:{
 			0:MFT.PlaylistItem.create({frequency: '98.2',genre: 'Club',title: 'SPRING TIME',artist: 'DJ SKY', isHd: false}) ,

@@ -199,7 +199,5 @@ FFW.RPCClient = Em.Object.extend({
 		if (this.requestId >= this.idStart + this.idRange)
 			this.requestId = this.idStart;
 		return this.requestId;
-	},
-
-
-})
+	}
+});

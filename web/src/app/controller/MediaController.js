@@ -871,7 +871,7 @@ MFT.MediaController = Em.Object.create({
         this.currentDirectTuneData.set('selectedDirectTuneStation');
 		playlist.set('selectedIndex', index);
 
-        if (playlist.name == 'fm1') {
+        if (MFT.FmModel.band.value == 0) {
             FFW.RevSDL.sendTuneRadioRequest(this.get('currentActiveData'));
         }
 	},
@@ -902,10 +902,16 @@ MFT.MediaController = Em.Object.create({
 
 	/** Store preset station data */
 	onStorePreset: function(playlistItem, playlist,index){
+        var presets = [];
+
 		/** Copy data from active station to current pressed*/
 		if(this.directTuneSelected){
 			if(!MFT.SiriusModel.active){
-				playlistItem.copy(this.currentDirectTuneData.get('selectedDirectItem'));
+                if (MFT.FmModel.band.value == 0) {
+                    playlistItem.set('frequency', this.currentDirectTuneData.get('selectedDirectItem').frequency);
+                } else {
+				    playlistItem.copy(this.currentDirectTuneData.get('selectedDirectItem'));
+                }
 			}else{
 
 				playlistItem.copy(MFT.SiriusModel.directTunestations.get('selectedDirectItem'));
@@ -919,19 +925,21 @@ MFT.MediaController = Em.Object.create({
 
 		// Show message
 		this.showStorePresetMessage();
+
+        if (MFT.FmModel.band.value == 0) {
+            for (var key in MFT.FmModel.fm1.items) {
+                presets.push(MFT.FmModel.fm1.items[key].frequency);
+            }
+
+            FFW.RevSDL.setNativeLocalPresets(presets);
+        }
 	},
 
     /** Set presets, when was changed presets on the HMI **/
     setSDLPresets: function (data) {
-        var i,
-            items = {};
-
-        for (i=0; i < data.customPresets.length; i++) {
-            items[i] = MFT.PlaylistItem.create({frequency: data.customPresets[i]})
+        for (var i = 0; i < data.customPresets.length; i++) {
+            MFT.FmModel.fm1.items[i].frequency.set('frequency', data.customPresets[i]);
         }
-
-        MFT.FmModel.fm1.set('items', items);
-        FFW.RevSDL.sendShowRequest();
     },
 
 	/** Player Next track event*/

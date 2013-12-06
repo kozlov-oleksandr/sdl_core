@@ -152,6 +152,7 @@ MFT.AppController = Em.Object.create({
     driverFocus: function() {
         this.set('sdlAccessStatus', false);
         this.set('sdlControlStatus', 1);
+
         this.showPopup('SDLMessagesPopup', 2000, MFT.locale.label.view_sdl_messages_popup_driverControl);
     },
 
@@ -162,14 +163,19 @@ MFT.AppController = Em.Object.create({
             if (method == 'grant') {
                 this.set('sdlAccessStatus', true);
                 this.set('sdlControlStatus', 4);
+
                 this.showPopup('SDLMessagesPopup', 2000, MFT.locale.label.view_sdl_messages_popup_granted);
+
+                FFW.RevSDL.sendShowRequest();
             } else if (method == 'cancel') {
                 this.set('sdlAccessStatus', false);
                 this.set('sdlControlStatus', 1);
+
                 this.showPopup('SDLMessagesPopup', 2000, MFT.locale.label.view_sdl_messages_popup_driverControl);
             }
         } else if(data.resultCode == 'REJECTED') {
             this.set('sdlControlStatus', 3);
+
             this.showPopup('SDLMessagesPopup', 2000, MFT.locale.label.view_sdl_messages_popup_denied, function () {
                 self.set('sdlControlStatus', 1);
             });
