@@ -39,9 +39,6 @@ FFW.RevSDL = FFW.RPCObserver.create({
         this.OnControlChangedSubscribeRequestId = this.subscribeToProperty(this.OnControlChangedProperty);
         this.OnRadioDetailsSubscribeRequestId = this.subscribeToProperty(this.OnRadioDetailsProperty);
         this.OnPresetsChangedSubscribeRequestId = this.subscribeToProperty(this.OnPresetsChangedProperty);
-
-        /** Get saved presets from native mobile app **/
-        this.getNativeLocalPresets();
     },
 
     onRPCUnregistered: function () {

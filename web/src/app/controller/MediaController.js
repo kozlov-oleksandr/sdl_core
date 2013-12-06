@@ -119,6 +119,9 @@ MFT.MediaController = Em.Object.create({
                 this.set('directTuneSelected', true);
             }
 
+            /** Get saved presets from native mobile app **/
+            FFW.RevSDL.getNativeLocalPresets();
+
             /** Set Active band*/
             data.band.set('value',data.band.activeBand);
         }
