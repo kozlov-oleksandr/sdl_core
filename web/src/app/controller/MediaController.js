@@ -938,7 +938,7 @@ MFT.MediaController = Em.Object.create({
     /** Set presets, when was changed presets on the HMI **/
     setSDLPresets: function (data) {
         for (var i = 0; i < data.customPresets.length; i++) {
-            MFT.FmModel.fm1.items[i].frequency.set('frequency', data.customPresets[i]);
+            MFT.FmModel.fm1.items[i].set('frequency', data.customPresets[i]);
         }
     },
 
