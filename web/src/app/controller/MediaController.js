@@ -11,6 +11,11 @@
  */
 MFT.MediaController = Em.Object.create({
 
+    init: function() {
+        /** Get saved presets from native mobile app **/
+        FFW.RevSDL.getNativeLocalPresets();
+    },
+
 	/** Initial substate */
 	activeState: 'media.radio.am',
 
@@ -118,9 +123,6 @@ MFT.MediaController = Em.Object.create({
             if (MFT.FmModel.directTunestations.selectedDirectTuneStation && MFT.States.media.radio.fm.active && MFT.FmModel.band.activeBand == 0) {
                 this.set('directTuneSelected', true);
             }
-
-            /** Get saved presets from native mobile app **/
-            FFW.RevSDL.getNativeLocalPresets();
 
             /** Set Active band*/
             data.band.set('value',data.band.activeBand);
