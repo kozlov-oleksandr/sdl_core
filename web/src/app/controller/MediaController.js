@@ -11,11 +11,6 @@
  */
 MFT.MediaController = Em.Object.create({
 
-    init: function() {
-        /** Get saved presets from native mobile app **/
-        FFW.RevSDL.getNativeLocalPresets();
-    },
-
 	/** Initial substate */
 	activeState: 'media.radio.am',
 
