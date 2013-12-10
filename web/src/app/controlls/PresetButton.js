@@ -41,7 +41,7 @@ MFT.PresetButton = MFT.Button.extend({
 	
 	/** Trigger action on mousedown */
 	actionDown: function (event) {
-        this._super();
+        this._super(event);
 
         var self = this;
         /** init timer for save preset logic*/
@@ -58,7 +58,7 @@ MFT.PresetButton = MFT.Button.extend({
 	
 	/** Trigger action on mouseup */
 	actionUp: function(event) {
-		this._super();
+		this._super(event);
 
 		if(this.content.isHd) {
 			MFT.MediaController.set('isActiveHdData', true);

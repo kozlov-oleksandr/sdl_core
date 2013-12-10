@@ -38,7 +38,8 @@ MFT.WidgetMediaView = Em.ContainerView.extend({
 		/** View components*/
 		childViews: [
 			'homePresets',
-			'info'
+			'info',
+            'tuneButtons'
 		],
 		/** Info */
 		info: Em.View.extend({
@@ -77,7 +78,40 @@ MFT.WidgetMediaView = Em.ContainerView.extend({
 		/** Preset Buttons*/
 		homePresets: MFT.HomePresetView.extend({
 			classNames: 'home-preset-buttons-wraper'
-		})
+		}),
+
+        tuneButtons: Em.ContainerView.extend({
+            elementId: 'home_widgetMedia_tuneButtons',
+
+            classNameBindings: ['isHidden:hidden'],
+
+            isHidden: function() {
+                return (MFT.MediaController.activeState.indexOf('fm') == -1);
+            }.property('MFT.MediaController.activeState'),
+
+            childViews: [
+                'tuneDown',
+                'tuneUp'
+            ],
+
+            tuneUp: MFT.Button.extend({
+                elementId:	'media_fm_tuneUpButton',
+                target:				'MFT.MediaController',
+                action:				'tuneUp',
+                onDown: false,
+                templateName: 'text',
+                text: '>>'
+            }),
+
+            tuneDown: MFT.Button.extend({
+                elementId:	'media_fm_tuneDownButton',
+                target:				'MFT.MediaController',
+                action:				'tuneDown',
+                onDown: false,
+                templateName: 'text',
+                text: '<<'
+            })
+        })
 	}),
 	/** CD modules (CD, USB , SD)*/
 	cd: Em.View.extend({
