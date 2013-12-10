@@ -1049,13 +1049,13 @@ MFT.MediaController = Em.Object.create({
 		this.set('directTuneFinished', false);
 		this.set('directKeypressed', false);
 
-        for (var key in MFT.FmModel.fm1.items) {
-            if (this.directTune.toString().replace(/,/g,'') === MFT.FmModel.fm1.items[key].frequency.replace('.', '')) {
+        for (var key in this.currentModuleData.items) {
+            if (this.directTune.toString().replace(/,/g,'') === this.currentModuleData.items[key].frequency.replace('.', '')) {
                 presetActive = true;
 
                 this.set('directTuneSelected', false);
 
-                MFT.FmModel.fm1.set('selectedIndex',Number(key));
+                this.currentModuleData.set('selectedIndex',Number(key));
 
                 break;
             }
