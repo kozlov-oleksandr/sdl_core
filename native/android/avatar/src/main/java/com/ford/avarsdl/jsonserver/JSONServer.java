@@ -1,8 +1,6 @@
 package com.ford.avarsdl.jsonserver;
 
-import android.util.Log;
-
-import com.ford.avarsdl.util.Const;
+import com.ford.avarsdl.util.Logger;
 import com.ford.avarsdl.util.RPCConst;
 
 import java.io.BufferedReader;
@@ -56,8 +54,6 @@ public class JSONServer extends Thread {
     // =====================================================
 	// private section
 	// =====================================================
-	private final boolean DEBUG = true;
-	private final String TAG_NAME = "JSONServer";
 	private MBWrapper mMsgBroker = null;
 	private int mPort = -1;
     private JSONServerCallback mCallback;
@@ -66,19 +62,19 @@ public class JSONServer extends Thread {
 	private Vector<BufferedWriter> mClientsWritersPool = new Vector<BufferedWriter>();
 
     protected ServerSocket createSocket() throws IOException {
-        logMsg("Create server socket, port: " + mPort);
+        Logger.i(getClass().getSimpleName() + " Create server socket, port: " + mPort);
         return new ServerSocket(mPort);
     }
 
     protected MBWrapper createMessageBrokerWrapper() {
-        logMsg("Create Message Broker wrapper");
+        Logger.i(getClass().getSimpleName() + " Create Message Broker wrapper");
         MBWrapper wrapper = MBWrapper.CreateMessageBroker();
-        logMsg("Wrapper is: " + wrapper.toString());
+        Logger.i(getClass().getSimpleName() + " Wrapper is: " + wrapper.toString());
         return wrapper;
     }
 	
 	private void listenSocket() {
-		logMsg("Start new thread for socket listener");
+        Logger.i(getClass().getSimpleName() + " Start new thread for socket listener");
 		//start server
 		Thread socketListenerThread = new Thread(new Runnable() {
 			
@@ -119,16 +115,17 @@ public class JSONServer extends Thread {
 	}
 	
 	private void waitMessages() {
-		logMsg("Wait for messages");
-		//read msg and send it to MB
+        Logger.i(getClass().getSimpleName() + " Wait for messages");
+		//read msg and send it to MsgBroker
 		while (true) {
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e1) {
 				e1.printStackTrace();
 			}
+            processSocketsConnection();
             //go through all clients readers and try to read msg
-            if (mClientsReadersPool != null)
+            if (mClientsReadersPool != null) {
                 for (int i = 0; i < mClientsReadersPool.size(); i++) {
                     // receive a message
                     String incomingMsg = null;
@@ -140,14 +137,30 @@ public class JSONServer extends Thread {
                     }
                     catch (IOException e) {
                         incomingMsg = null;
+                        Logger.e(getClass().getSimpleName() + " waitMessages: " + e);
                     }
-                }//for
-		}// while
+                }
+            }
+		}
 	}
+
+    private void processSocketsConnection() {
+        /*boolean result = true;
+        for (Socket socket : mClientsSocketsPool) {
+            Logger.w(getClass().getSimpleName() + " Socket: " + socket.isConnected() + " " + socket.isClosed());
+            if (!socket.isConnected() || socket.isClosed()) {
+                result = false;
+                break;
+            }
+        }
+        if (!result) {
+            Logger.w(getClass().getSimpleName() + " Socket disconnected");
+        }*/
+    }
 	
 	//method for sending messages from native code
 	private int Send(int ctrlIndex, String data) {
-		logMsg("Send message to client: " + data);
+        Logger.d(getClass().getSimpleName() + " Send message to client: " + data);
 		try {
 			mClientsWritersPool.get(ctrlIndex-1).write(data);
 			mClientsWritersPool.get(ctrlIndex-1).flush();
@@ -185,10 +198,4 @@ public class JSONServer extends Thread {
                 mClientsWritersPool.size() > 0 ||
                 mClientsSocketsPool.size() > 0;
     }
-	
-	private void logMsg(String msg) {
-		if (DEBUG && Const.DEBUG) {
-			Log.i(TAG_NAME, msg);
-		}
-	}
 }

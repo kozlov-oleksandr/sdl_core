@@ -98,7 +98,7 @@ public class AppUtils {
     }
 
     public static String getOSVersion() {
-        Logger.i("AndroidVersion:" + Build.VERSION.SDK_INT);
+        //Logger.i("AndroidVersion:" + Build.VERSION.SDK_INT);
         switch (Build.VERSION.SDK_INT) {
             case 8:
                 return "2.2";
