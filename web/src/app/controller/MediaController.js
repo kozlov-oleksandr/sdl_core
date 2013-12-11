@@ -1127,7 +1127,8 @@ MFT.MediaController = Em.Object.create({
         if (!presetActive) {
             MFT.FmModel.directTunestations.set('selectedDirectTuneStation', frequencyIndex);
 
-            if (MFT.States.media.radio.fm.active && MFT.FmModel.band.value == 0) {
+            if ((MFT.States.media.radio.fm.active && MFT.FmModel.band.value == 0)
+                || (MFT.States.home.active && this.activeState.indexOf('fm') != -1 && MFT.FmModel.band.activeBand == 0)) {
                 this.set('directTuneSelected', true);
             }
         }
