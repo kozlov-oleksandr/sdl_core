@@ -773,10 +773,10 @@ MFT.MediaController = Em.Object.create({
 	 * 0 - On
 	 * 1 - Off
 	 */
-	fmRDSTextOnOff: 1,
+	fmRDSTextOnOff: 0,
 
 	/** Enable/Disable PTYButton status  */
-	PTYButtonIsDisabled: true,
+	PTYButtonIsDisabled: false,
 
 	/*
 	 * Set Enable/Disable PTYButton status
@@ -792,7 +792,7 @@ MFT.MediaController = Em.Object.create({
 	}.observes('this.fmRDSTextOnOff'),
 
 	/** Fm RDSText visibility */
-	fmRDSTextIsHidden: true,
+	fmRDSTextIsHidden: false,
 
 	/** Current station is Hd */
 	isActiveHdData: false,
@@ -814,7 +814,7 @@ MFT.MediaController = Em.Object.create({
 	}.observes('this.isActiveHdData','this.fmRDSTextOnOff','MFT.AmModel.active'),
 
 	/** Visibility of genres label */
-	genreIsVisible: false,
+    genreIsHidden: false,
 
 	/**
 	 * Show genr label
@@ -823,9 +823,9 @@ MFT.MediaController = Em.Object.create({
 	 */
 	showGenreText: function(){
 		if ( this.isActiveHdData || !this.fmRDSTextOnOff) {
-			this.set('genreIsVisible',true);
+			this.set('genreIsHidden',false);
 		}
-			else this.set('genreIsVisible',false);
+			else this.set('genreIsHidden',true);
 	}.observes('this.isActiveHdData','this.fmRDSTextOnOff'),
 
 	/**

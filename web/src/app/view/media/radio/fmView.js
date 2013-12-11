@@ -65,9 +65,9 @@ MFT.FMView = Em.ContainerView.create(MFT.LoadableView,{
                         '<div class="hdtitle">{{view.controler.currentActiveData.title}}</div>'+
                         '<div class="hdartist">{{view.controler.currentActiveData.artist}}</div>'+
                         '</div>'+
-                        '<div class="nonHDsonginfo not-visible" {{bindAttr class="view.controler.fmRDSTextIsHidden::visible"}}>{{view.songInfo}}</div>'+
-                        '<span class="STAName not-visible" {{bindAttr class=" view.controler.fmRDSTextIsHidden::visible"}}>STA-{{view.STAName}}</span>'+
-                        '<div class="fmgenre not-visible" {{bindAttr class="view.controler.genreIsVisible:visible "}}>{{view.controler.currentActiveData.genre}}</div>'
+                        '<div class="nonHDsonginfo not-visible visible" {{bindAttr class="view.controler.fmRDSTextIsHidden::visible"}}>{{view.songInfo}}</div>'+
+                        '<span class="STAName not-visible visible" {{bindAttr class=" view.controler.fmRDSTextIsHidden::visible"}}>STA-{{view.STAName}}</span>'+
+                        '<div class="fmgenre not-visible visible" {{bindAttr class="view.controler.genreIsHidden::visible "}}>{{view.controler.currentActiveData.genre}}</div>'
                 ),
                 /** Formate Station name according to HD or non HD State of Station*/
                 STAName: function(){
