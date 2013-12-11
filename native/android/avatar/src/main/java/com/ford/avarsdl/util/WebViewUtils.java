@@ -33,7 +33,6 @@ public class WebViewUtils {
 
 	/**
 	 * @param activity
-	 * @param wv
 	 */
 	public static void initWebView(final AvatarActivity activity) {
 		// Fix white line
@@ -118,7 +117,7 @@ public class WebViewUtils {
 		}
 
 		//do not set touch listener for android 4 and higher
-		String androidVersion = activity.getBEController().getOSVersion();
+		String androidVersion = AppUtils.getOSVersion();
 		if (androidVersion.substring(0, 1).compareTo("3") <= 0)
 			setOnTouchListener(activity, BLOCKING_ACTION_MOVE_MODE);
 

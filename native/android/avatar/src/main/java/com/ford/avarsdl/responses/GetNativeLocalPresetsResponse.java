@@ -4,6 +4,8 @@ import com.ford.avarsdl.jsoncontroller.JSONController;
 import com.ford.avarsdl.util.Logger;
 import com.ford.avarsdl.util.RPCConst;
 
+import java.io.IOException;
+
 /**
  * Created with Android Studio.
  * Author: Chernyshov Yuriy - Mobile Development
@@ -12,7 +14,7 @@ import com.ford.avarsdl.util.RPCConst;
  */
 public class GetNativeLocalPresetsResponse extends JSONController implements ResponseCommand {
 
-    public GetNativeLocalPresetsResponse() {
+    public GetNativeLocalPresetsResponse() throws IOException {
         super(RPCConst.CN_REVSDL);
     }
 

@@ -15,6 +15,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+
 /**
  * Created with Android Studio.
  * Author: Chernyshov Yuriy - Mobile Development
@@ -34,13 +36,14 @@ public class GetNativeLocalPresetsCommand implements RequestCommand {
             try {
                 JSONArray jsonArray = new JSONArray(presetsValue);
                 jsonObject.put(Const.JSON_KEY_CUSTOM_PRESETS, jsonArray);
-            } catch (JSONException e) {
-                Logger.e(getClass().getSimpleName() + " execute", e);
-                return;
-            }
 
-            ResponseCommand command = new GetNativeLocalPresetsResponse();
-            command.execute(id, jsonObject.toString());
+                ResponseCommand command = new GetNativeLocalPresetsResponse();
+                command.execute(id, jsonObject.toString());
+            } catch (JSONException e) {
+                Logger.e(getClass().getSimpleName() + " execute JSONException", e);
+            } catch (IOException e) {
+                Logger.e(getClass().getSimpleName() + " execute IOException", e);
+            }
         }
     }
 }

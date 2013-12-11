@@ -1,5 +1,6 @@
 package com.ford.avarsdl.jssupport;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 import android.util.Log;
@@ -22,17 +23,17 @@ public class JavaScriptFacade {
 	}
 
 	// /////////////RPC//////////////////////////////////////
-	public void send(String cName, String jsonMsg){
-		logMsg("send from JS");
-		if(mJSComponents.containsKey(cName))
-			mJSComponents.get(cName).sendJSMessage(cName, jsonMsg);
-		else{
-			JSONAVAController ctrl = new JSONAVAController(mVideoActivity, cName); 
-			mJSComponents.put(cName, ctrl);
-			ctrl.sendJSMessage(cName, jsonMsg);
-		}
-		
-	}
+    public void send(String cName, String jsonMsg) throws IOException {
+        logMsg("send from JS");
+        if(mJSComponents.containsKey(cName))
+            mJSComponents.get(cName).sendJSMessage(cName, jsonMsg);
+        else{
+            JSONAVAController ctrl = new JSONAVAController(mVideoActivity, cName);
+            mJSComponents.put(cName, ctrl);
+            ctrl.sendJSMessage(cName, jsonMsg);
+        }
+
+    }
 	
 	// ////////////////// OTHER ////////////////////
 

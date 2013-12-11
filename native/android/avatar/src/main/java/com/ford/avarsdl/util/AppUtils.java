@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Looper;
+import android.util.Log;
 
 import java.io.File;
 
@@ -93,6 +94,36 @@ public class AppUtils {
         } catch (Throwable e) {
             Logger.e("Package manager has Throwable : " + e);
             return null;
+        }
+    }
+
+    public static String getOSVersion() {
+        Logger.i("AndroidVersion:" + Build.VERSION.SDK_INT);
+        switch (Build.VERSION.SDK_INT) {
+            case 8:
+                return "2.2";
+            case 9:
+                return "2.3.1";
+            case 10:
+                return "2.3.3";
+            case 11:
+                return "3.0";
+            case 12:
+                return "3.1";
+            case 13:
+                return "3.2";
+            case 14:
+                return "4.0";
+            case 15:
+                return "4.0.3";
+            case 16:
+                return "4.1.0";
+            case 17:
+                return "4.2.0";
+            case 18:
+                return "4.3.0";
+            default:
+                return "unknown";
         }
     }
 }

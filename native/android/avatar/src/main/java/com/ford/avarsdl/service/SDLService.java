@@ -83,6 +83,7 @@ import com.ford.syncV4.transport.TCPTransportConfig;
 
 import org.json.JSONException;
 
+import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -113,7 +114,12 @@ public class SDLService extends Service implements IProxyListenerALM {
         Logger.d(getClass().getSimpleName() + " onStartCommand " + intent + ", " + flags + ", " +
                 startId);
 
-        initializeCommandsHashTable();
+        try {
+            initializeCommandsHashTable();
+        } catch (IOException e) {
+            // TODO: Probably to stop Service here or to dispatch this error
+            Logger.e(getClass().getSimpleName() + " can not init commands: " + e.getMessage());
+        }
         startProxyIfNetworkConnected();
         return START_STICKY;
     }
@@ -472,32 +478,31 @@ public class SDLService extends Service implements IProxyListenerALM {
 
     @Override
     public void onGiveControlResponse(GrantAccessResponse response) {
-        final String msg =
-                "GrantAccessResponse success " + response.getSuccess() +
-                        ", " + response.getResultCode() + ", " + response.getInfo();
-        //SafeToast.showToastAnyThread(msg);
-
-        ResponseCommand command = new com.ford.avarsdl.responses.GrantAccessResponse();
+        ResponseCommand command;
         try {
+            command = new com.ford.avarsdl.responses.GrantAccessResponse();
             byte serializeMethod = 2;
             command.execute(response.getCorrelationID(),
                     response.serializeJSON(serializeMethod).toString());
         } catch (JSONException e) {
-            e.printStackTrace();
-            Logger.e(getClass().getSimpleName() + " onGiveControlResponse " + e);
+            Logger.e(getClass().getSimpleName() + " onGiveControlResponse JSONException " + e);
+        } catch (IOException e) {
+            Logger.e(getClass().getSimpleName() + " onGiveControlResponse IOException " + e);
         }
     }
 
     @Override
     public void onCancelAccessResponse(CancelAccessResponse response) {
-        ResponseCommand command = new com.ford.avarsdl.responses.CancelAccessResponse();
+        ResponseCommand command;
         try {
+            command = new com.ford.avarsdl.responses.CancelAccessResponse();
             byte serializeMethod = 2;
             command.execute(response.getCorrelationID(),
                     response.serializeJSON(serializeMethod).toString());
         } catch (JSONException e) {
-            e.printStackTrace();
-            Logger.e(getClass().getSimpleName() + " onCancelAccessResponse " + e);
+            Logger.e(getClass().getSimpleName() + " onCancelAccessResponse JSONException " + e);
+        } catch (IOException e) {
+            Logger.e(getClass().getSimpleName() + " onCancelAccessResponse IOException " + e);
         }
     }
 
@@ -596,7 +601,7 @@ public class SDLService extends Service implements IProxyListenerALM {
 
     }
 
-    private void initializeCommandsHashTable() {
+    private void initializeCommandsHashTable() throws IOException {
         // TODO: Probably in the future version there will be differences between notification
         // objects, but up to now they contain general information structure
 

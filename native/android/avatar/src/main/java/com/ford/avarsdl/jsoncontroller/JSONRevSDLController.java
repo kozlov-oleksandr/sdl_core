@@ -13,13 +13,14 @@ import com.ford.avarsdl.util.Logger;
 import com.ford.avarsdl.util.RPCConst;
 import com.ford.syncV4.proxy.constants.Names;
 
+import java.io.IOException;
 import java.util.Hashtable;
 
 public class JSONRevSDLController extends JSONController {
 
     private final Hashtable<String, RequestCommand> commandsHashTable;
 
-    public JSONRevSDLController() {
+    public JSONRevSDLController() throws IOException {
         super(RPCConst.CN_REVSDL);
 
         commandsHashTable = new Hashtable<String, RequestCommand>();

@@ -6,6 +6,7 @@ import com.ford.avarsdl.views.AvatarActivity;
 import com.ford.avarsdl.util.Logger;
 import com.ford.avarsdl.util.RPCConst;
 
+import java.io.IOException;
 import java.util.Hashtable;
 
 public class JSONAVAController extends JSONController {
@@ -15,15 +16,15 @@ public class JSONAVAController extends JSONController {
     private String mJSComponentName = null;
     private AvatarActivity mActivity;
 
-    public JSONAVAController(ITcpClient client) {
-        super(RPCConst.CN_AVATAR, client);
-        initializeCommandsTable();
+    public JSONAVAController(AvatarActivity activity, String cname) throws IOException {
+        super(RPCConst.CN_AVATAR);
+        mActivity = activity;
+        mJSComponentName = cname;
     }
 
-    public JSONAVAController(AvatarActivity activity, String componentName) {
-        this(null);
-        mActivity = activity;
-        mJSComponentName = componentName;
+    public JSONAVAController(String cname, ITCPClient client) throws IOException {
+        super(RPCConst.CN_AVATAR, client);
+        mJSComponentName = cname;
     }
 
     protected void processRequest(String request) {

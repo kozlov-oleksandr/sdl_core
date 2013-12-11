@@ -43,9 +43,4 @@ public class JSONBackendControllerTest extends TestCase {
 	public final void testSendVehicleNotification() {
 		fail("Not yet implemented"); // TODO
 	}
-
-	public final void testGetOSVersion() {
-		fail("Not yet implemented"); // TODO
-	}
-
 }

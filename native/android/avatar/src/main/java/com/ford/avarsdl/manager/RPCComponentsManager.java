@@ -2,13 +2,14 @@ package com.ford.avarsdl.manager;
 
 import android.util.Log;
 
-import com.ford.myfordtouchguide.activity.AvatarActivity;
-import com.ford.myfordtouchguide.jsoncontroller.JSONBackendController;
-import com.ford.myfordtouchguide.jsoncontroller.JSONController;
-import com.ford.myfordtouchguide.jsoncontroller.JSONRateController;
-import com.ford.myfordtouchguide.jsoncontroller.JSONVideoController;
-import com.ford.myfordtouchguide.jsonserver.JSONServer;
-import com.ford.myfordtouchguide.rater.AppRater;
+import com.ford.avarsdl.jsoncontroller.JSONBackendController;
+import com.ford.avarsdl.jsoncontroller.JSONController;
+import com.ford.avarsdl.jsoncontroller.JSONRateController;
+import com.ford.avarsdl.jsoncontroller.JSONRevSDLController;
+import com.ford.avarsdl.jsoncontroller.JSONVideoController;
+import com.ford.avarsdl.jsonserver.JSONServer;
+import com.ford.avarsdl.rater.AppRater;
+import com.ford.avarsdl.views.AvatarActivity;
 
 import java.io.IOException;
 
@@ -34,6 +35,7 @@ public class RPCComponentsManager {
     private JSONBackendController mBackendController;
     private JSONVideoController mVideoController;
     private JSONRateController mRateController;
+    private JSONRevSDLController mRevSDLController;
 
     public RPCComponentsManager() {
 
@@ -156,8 +158,8 @@ public class RPCComponentsManager {
         mRateController = new JSONRateController(mAppRater);
         mRateController.setCallback(new JSONController.JSONControllerCallback() {
             @Override
-            public void onRegister() {
-                mCallback.onComplete();
+            public void onRegister() throws IOException {
+                startRevSDLController();
             }
 
             @Override
@@ -166,5 +168,22 @@ public class RPCComponentsManager {
             }
         });
         mRateController.register(29);
+    }
+
+    private void startRevSDLController() throws IOException {
+        Log.i(TAG, "Start RevSDL controller");
+        mRevSDLController = new JSONRevSDLController();
+        mRevSDLController.setCallback(new JSONController.JSONControllerCallback() {
+            @Override
+            public void onRegister() throws IOException {
+                mCallback.onComplete();
+            }
+
+            @Override
+            public void onError(String message) {
+                mCallback.onError("RevSDL controller" + message);
+            }
+        });
+        mRevSDLController.register(30);
     }
 }
