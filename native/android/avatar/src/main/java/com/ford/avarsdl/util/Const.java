@@ -111,5 +111,5 @@ public class Const {
      * Default Presets for the Radio Station unit
      */
     public static final String DEFAULT_RADIO_STATIONS_PRESETS =
-            "['87.9','90.9','105.1','98.5','106.3','93.4']";
+            "['87.9','90.9','105.1','98.5','106.3','93.5']";
 }
