@@ -44,5 +44,7 @@
     <string name="app_setup_protocol_tcp_port_default">12345</string>
     <string name="app_setup_protocol_wifi">WiFi</string>
     <string name="app_setup_protocol_bluetooth">Bluetooth</string>
+    <string name="bluetooth_not_supported">Device does not support Bluetooth</string>
+    <string name="bluetooth_not_enabled">Bluetooth is not enabled</string>
 
 </resources>
