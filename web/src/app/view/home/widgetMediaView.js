@@ -95,7 +95,7 @@ MFT.WidgetMediaView = Em.ContainerView.extend({
             ],
 
             tuneUp: MFT.Button.extend({
-                elementId:	'media_fm_tuneUpButton',
+                elementId:	'home_widgetMedia_fm_tuneUpButton',
                 target:				'MFT.MediaController',
                 action:				'tuneUp',
                 onDown: false,
@@ -104,7 +104,7 @@ MFT.WidgetMediaView = Em.ContainerView.extend({
             }),
 
             tuneDown: MFT.Button.extend({
-                elementId:	'media_fm_tuneDownButton',
+                elementId:	'home_widgetMedia_fm_tuneDownButton',
                 target:				'MFT.MediaController',
                 action:				'tuneDown',
                 onDown: false,
