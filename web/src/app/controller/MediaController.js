@@ -871,7 +871,7 @@ MFT.MediaController = Em.Object.create({
         this.currentDirectTuneData.set('selectedDirectTuneStation');
 		playlist.set('selectedIndex', index);
 
-        if (MFT.FmModel.band.value == 0) {
+        if (MFT.FmModel.band.value == 0 || (MFT.States.home.active && this.activeState.indexOf('fm') != -1 && MFT.FmModel.band.activeBand == 0)) {
             FFW.RevSDL.sendTuneRadioRequest(this.get('currentActiveData'));
         }
 	},
@@ -926,7 +926,7 @@ MFT.MediaController = Em.Object.create({
 		// Show message
 		this.showStorePresetMessage();
 
-        if (MFT.FmModel.band.value == 0) {
+        if (MFT.FmModel.band.value == 0 || (MFT.States.home.active && this.activeState.indexOf('fm') != -1 && MFT.FmModel.band.activeBand == 0)) {
             for (var key in MFT.FmModel.fm1.items) {
                 presets.push(MFT.FmModel.fm1.items[key].frequency);
             }

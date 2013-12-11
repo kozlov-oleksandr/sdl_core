@@ -86,8 +86,8 @@ MFT.WidgetMediaView = Em.ContainerView.extend({
             classNameBindings: ['isHidden:hidden'],
 
             isHidden: function() {
-                return (MFT.MediaController.activeState.indexOf('fm') == -1);
-            }.property('MFT.MediaController.activeState'),
+                return (MFT.MediaController.activeState.indexOf('fm') == -1 || MFT.FmModel.band.activeBand != 0);
+            }.property('MFT.MediaController.activeState','MFT.FmModel.band.activeBand'),
 
             childViews: [
                 'tuneDown',
