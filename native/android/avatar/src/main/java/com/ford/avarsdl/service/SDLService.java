@@ -76,6 +76,7 @@ import com.ford.syncV4.proxy.rpc.UnsubscribeButtonResponse;
 import com.ford.syncV4.proxy.rpc.UnsubscribeVehicleDataResponse;
 import com.ford.syncV4.proxy.rpc.UpdateTurnListResponse;
 import com.ford.syncV4.proxy.rpc.enums.AppHMIType;
+import com.ford.syncV4.proxy.rpc.enums.ChangeReason;
 import com.ford.syncV4.proxy.rpc.enums.Language;
 import com.ford.syncV4.transport.TCPTransportConfig;
 
@@ -102,6 +103,7 @@ public class SDLService extends Service implements IProxyListenerALM {
     private final IBinder mBinder = new SDLServiceBinder(this);
     private static final Hashtable<String, NotificationCommand> commandsHashTable
             = new Hashtable<String, NotificationCommand>();
+    private boolean isMobileInFocus = false;
 
     public static SyncProxyALM getProxyInstance() {
         return mSyncProxy;
@@ -256,6 +258,18 @@ public class SDLService extends Service implements IProxyListenerALM {
     public void onError(String info, Exception e) {
         String msg = "Proxy Error: " + info;
         SafeToast.showToastAnyThread(msg);
+        if (e instanceof SyncException) {
+            if (((SyncException) e).getSyncExceptionCause() == SyncExceptionCause.SYNC_UNAVAILALBE) {
+
+                if (isMobileInFocus) {
+                    OnControlChanged onControlChanged = new OnControlChanged();
+                    onControlChanged.setParameters(Names.reason, ChangeReason.DRIVER_FOCUS);
+                    onOnControlChanged(onControlChanged);
+
+                    isMobileInFocus = false;
+                }
+            }
+        }
     }
 
     @Override
@@ -482,6 +496,9 @@ public class SDLService extends Service implements IProxyListenerALM {
             byte serializeMethod = 2;
             command.execute(response.getCorrelationID(),
                     response.serializeJSON(serializeMethod).toString());
+
+            isMobileInFocus = true;
+
         } catch (JSONException e) {
             Logger.e(getClass().getSimpleName() + " onGiveControlResponse JSONException " + e);
         } catch (IOException e) {
@@ -502,6 +519,8 @@ public class SDLService extends Service implements IProxyListenerALM {
         } catch (IOException e) {
             Logger.e(getClass().getSimpleName() + " onCancelAccessResponse IOException " + e);
         }
+
+        isMobileInFocus = false;
     }
 
     @Override
