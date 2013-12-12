@@ -8,16 +8,18 @@ import com.ford.avarsdl.util.Const;
 import com.ford.avarsdl.util.MessageConst;
 import com.ford.avarsdl.util.RPCConst;
 
+import java.io.IOException;
+
 public class JSONRateController extends JSONController {
 	
 	private final boolean DEBUG = true;
 	private final String TAG = JSONRateController.class.getSimpleName();
 	private AppRater mAppRater;
-	
-	public JSONRateController(AppRater rater){
-		super(RPCConst.CN_RATE);
-		mAppRater = rater;
-	}
+
+    public JSONRateController(AppRater rater) throws IOException {
+        super(RPCConst.CN_RATE);
+        mAppRater = rater;
+    }
 	
 	public void sendRateAppRequest(){
 //		String method = RPCConst.CN_RATE_CLIENT + "." 

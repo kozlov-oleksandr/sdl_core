@@ -7,6 +7,8 @@ import com.ford.syncV4.proxy.RPCNotification;
 
 import org.json.JSONException;
 
+import java.io.IOException;
+
 /**
  * Created with Android Studio.
  * Author: Chernyshov Yuriy - Mobile Development
@@ -15,7 +17,7 @@ import org.json.JSONException;
  */
 public class NotificationCommandImpl extends JSONController implements NotificationCommand {
 
-    public NotificationCommandImpl() {
+    public NotificationCommandImpl() throws IOException {
         super(RPCConst.CN_REVSDL);
     }
 

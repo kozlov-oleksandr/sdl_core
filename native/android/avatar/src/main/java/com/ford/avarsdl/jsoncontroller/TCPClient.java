@@ -1,97 +1,56 @@
 package com.ford.avarsdl.jsoncontroller;
 
-import com.ford.avarsdl.util.Logger;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
-import java.net.UnknownHostException;
+import java.net.SocketAddress;
 
-public class TCPClient implements ITcpClient {
+public class TCPClient implements ITCPClient {
 
-	public TCPClient(String adress, int port) {
-		mAdress = adress;
-		mPort = port;
-		// connect to server
-		connect();
+    private static final int TIMEOUT = 0;
+    private Socket mSocket = null;
+    private BufferedReader mSocketReader = null;
+    private BufferedWriter mSocketWriter = null;
+
+	public TCPClient() {
+		mSocket = new Socket();
 	}
 	
 	@Override
-	public void connect() {
-		try {
-			// create connection
-			mSocket = new Socket(mAdress, mPort);
-			mSocket.setTcpNoDelay(true);
-			mSocket.setSoTimeout(0);
-			mSocketReader = new BufferedReader(new InputStreamReader(
-					mSocket.getInputStream()));
-			mSocketWriter = new BufferedWriter(new OutputStreamWriter(
-					mSocket.getOutputStream()));
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public void connect(SocketAddress socketAddress) throws IOException {
+        mSocket.setTcpNoDelay(true);
+        mSocket.connect(socketAddress, TIMEOUT);
+        mSocketReader = new BufferedReader(new InputStreamReader(mSocket.getInputStream()));
+        mSocketWriter = new BufferedWriter(new OutputStreamWriter(mSocket.getOutputStream()));
 	}
 
 	@Override
-	public void sendMsg(String msg) {
-		try {
-			mSocketWriter.write(msg);
-			mSocketWriter.flush();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-            Logger.e(getClass().getSimpleName() + " sendMsg: " + e);
-		}
+	public void sendMsg(String msg) throws IOException {
+        mSocketWriter.write(msg);
+        mSocketWriter.flush();
 	}
 
 	@Override
-	public String receiveMsg() {
+	public String receiveMsg() throws IOException {
 		String response = null;
-		try {
-			if (mSocketReader.ready())
-				response = mSocketReader.readLine();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+        if (mSocketReader.ready()) {
+            response = mSocketReader.readLine();
+        }
 		return response;
 	}
 
 	@Override
-	public void disconnect() {
-		try {
-			mSocketReader.close();
-			mSocketWriter.close();
-			mSocket.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public void disconnect() throws IOException {
+		mSocketReader.close();
+        mSocketWriter.close();
+        mSocket.close();
 	}
 
-	// Getters
-
-	public int getPort() {
-		return mPort;
-	}
-
-	public String getAdress() {
-		return mAdress;
-	}
-
-	public Socket getSocket() {
-		return mSocket;
-	}
-
-	// ===============================================
-	// private section
-	// ===============================================
-	private int mPort = -1;
-	private String mAdress = null;
-	private Socket mSocket = null;
-	private BufferedReader mSocketReader = null;
-	private BufferedWriter mSocketWriter = null;
-
+    @Override
+    public boolean isConnected() {
+        return mSocket.isConnected();
+    }
 }

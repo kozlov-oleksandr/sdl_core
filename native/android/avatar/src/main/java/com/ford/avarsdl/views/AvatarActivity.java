@@ -22,6 +22,7 @@ import android.os.Message;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,6 +39,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
+import android.widget.Toast;
 
 import com.android.vending.expansion.zipfile.APKExpansionSupport;
 import com.android.vending.expansion.zipfile.ZipResourceFile;
@@ -47,12 +49,7 @@ import com.ford.avarsdl.downloader.DownloaderClient;
 import com.ford.avarsdl.downloader.XAPKFile;
 import com.ford.avarsdl.exception.ExtensionFileException;
 import com.ford.avarsdl.exception.MediaPlayerException;
-import com.ford.avarsdl.jsoncontroller.JSONBackendController;
-import com.ford.avarsdl.jsoncontroller.JSONRateController;
-import com.ford.avarsdl.jsoncontroller.JSONRevSDLController;
-import com.ford.avarsdl.jsoncontroller.JSONVideoController;
-import com.ford.avarsdl.jsonserver.JSONServer;
-import com.ford.avarsdl.media.AvatarOnPreparedListener;
+import com.ford.avarsdl.manager.RPCComponentsManager;
 import com.ford.avarsdl.rater.AppRater;
 import com.ford.avarsdl.service.ISDLServiceConnection;
 import com.ford.avarsdl.service.SDLService;
@@ -90,6 +87,7 @@ public class AvatarActivity extends Activity implements SurfaceHolder.Callback,
     public static Boolean navigationPreferenceChanged = false;
 
     public static Boolean ratePreferenceEnabled;
+    private RPCComponentsManager mRPCComponentsManager = new RPCComponentsManager();
 
     @Override
     public void onStart() {
@@ -298,16 +296,8 @@ public class AvatarActivity extends Activity implements SurfaceHolder.Callback,
         return mVideoPlayed;
     }
 
-    public JSONVideoController getVideoController() {
-        return mVideoController;
-    }
-
     public boolean getVideoPrepared() {
         return mVideoPrepared;
-    }
-
-    public JSONBackendController getBEController() {
-        return mBEController;
     }
 
     // setters
@@ -338,10 +328,12 @@ public class AvatarActivity extends Activity implements SurfaceHolder.Callback,
                 // current position in MP never reaches duration value
                 // check difference on 500 msec
                 if (mVideoPrepared) {
+                    int position;
                     if ((mMediaPlayer.getDuration() - mMediaPlayer.getCurrentPosition()) < 500)
-                        mVideoController.sendPositionNotification(mMediaPlayer.getDuration());
+                        position = mMediaPlayer.getDuration();
                     else
-                        mVideoController.sendPositionNotification(mMediaPlayer.getCurrentPosition());
+                        position = mMediaPlayer.getCurrentPosition();
+                    mRPCComponentsManager.sendPositionNotificationToVideoController(position);
                 }
             }
         };
@@ -379,11 +371,6 @@ public class AvatarActivity extends Activity implements SurfaceHolder.Callback,
     private String mPath;
 
     private Animation mAnimationShow;
-
-    // for JSON communication
-    private JSONServer mServerThread;
-    private JSONBackendController mBEController;
-    private JSONVideoController mVideoController;
 
     // for video time visualization
     private Timer mVideoTimer;// timer to send notifications about current video
@@ -643,10 +630,25 @@ public class AvatarActivity extends Activity implements SurfaceHolder.Callback,
         }
 
         mAppRater = new AppRater(this);
-        startRPCComponents();
+
         prepareMainView();
         WebViewUtils.initWebView(this);
         initVideoSurface();
+
+        mRPCComponentsManager.setCallback(new RPCComponentsManager.RPCComponentsManagerCallback() {
+            @Override
+            public void onComplete() {
+                Logger.i("RPC Components running successfully");
+                // TODO: Implement Notification here
+            }
+
+            @Override
+            public void onError(String message) {
+                Logger.e("Can not run RPC Components: " + message);
+                // TODO: Implement Notification here
+            }
+        });
+        mRPCComponentsManager.init(this);
     }
 
     private void resumeAvatarActivity() {
@@ -654,29 +656,31 @@ public class AvatarActivity extends Activity implements SurfaceHolder.Callback,
 
         if (!fullscreenPreferenceChanged && !vehiclePreferenceChanged)
             initVideoSurface(); // to init video after resuming but not
-        // after FullScreen or Vehicle changing
+                                // after FullScreen or Vehicle changing
 
-        if (mPreferences != null) {
-            if (fullscreenPreferenceChanged) {
-                fullscreenPreferenceChanged = false;
-                mBEController.sendFullScreenRequest(getFullscreenStatus());
+        if (mWebView.getUrl() == null) {
+            if (!loadContent()) {
+                Toast.makeText(this, R.string.toast_index_not_found, Toast.LENGTH_LONG).show();
             }
+        }
 
-            if (vehiclePreferenceChanged) {
-                vehiclePreferenceChanged = false;
-                mBEController.sendVehicleNotification(getVehicleStatus());
-            }
+        if (mRPCComponentsManager.getBackendController() == null) {
+            return;
+        }
 
-            if (navigationPreferenceChanged) {
-                navigationPreferenceChanged = false;
-                mBEController.sendHasMapsNotification(getMapsStatus());
-            }
+        if (fullscreenPreferenceChanged) {
+            fullscreenPreferenceChanged = false;
+            mRPCComponentsManager.getBackendController().sendFullScreenRequest(getFullscreenStatus());
+        }
 
-            if (mWebView.getUrl() == null) {
-                if (!loadContent()) {
-                    SafeToast.showToastAnyThread(getString(R.string.toast_index_not_found));
-                }
-            }
+        if (vehiclePreferenceChanged) {
+            vehiclePreferenceChanged = false;
+            mRPCComponentsManager.getBackendController().sendVehicleNotification(getVehicleStatus());
+        }
+
+        if (navigationPreferenceChanged) {
+            navigationPreferenceChanged = false;
+            mRPCComponentsManager.getBackendController().sendHasMapsNotification(getMapsStatus());
         }
     }
 
@@ -693,13 +697,7 @@ public class AvatarActivity extends Activity implements SurfaceHolder.Callback,
 
             releaseMediaPlayer();
             doCleanUp();
-            // close JSON server
-            try {
-                if (mServerThread != null)
-                    mServerThread.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            mRPCComponentsManager.close();
         }
         super.onDestroy();
     }
@@ -728,67 +726,6 @@ public class AvatarActivity extends Activity implements SurfaceHolder.Callback,
             successful = true;
         }
         return successful;
-    }
-
-    private void startRPCComponents() {
-        Logger.i(getClass().getSimpleName() + " Start RPC Components");
-
-        mServerThread = new JSONServer();
-        mServerThread.setName("ServerThread");
-        mServerThread.start();
-
-        // wait for a while
-        while (!mServerThread.isReady()) {
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-        mBEController = new JSONBackendController(this);
-        mBEController.register(27);
-        // wait for a while
-        while (!mBEController.isRegistered()) {
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-        mVideoController = new JSONVideoController(this);
-        mVideoController.register(28);
-        // wait for a while
-        while (!mVideoController.isRegistered()) {
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-        JSONRateController mRateController = new JSONRateController(mAppRater);
-        mRateController.register(29);
-        // wait for a while
-        while (!mRateController.isRegistered()) {
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-        JSONRevSDLController mRevSDLController = new JSONRevSDLController();
-        mRevSDLController.register(30);
-        // wait for a while
-        while (!mRevSDLController.isRegistered()) {
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     private void prepareMainView() {
@@ -1005,14 +942,37 @@ public class AvatarActivity extends Activity implements SurfaceHolder.Callback,
 
                 mMediaPlayer.setDisplay(holder);
 
-                mMediaPlayer.setOnPreparedListener(new AvatarOnPreparedListener(this));
+                mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                    @Override
+                    public void onPrepared(MediaPlayer mediaPlayer) {
+                        Logger.d("MediaPlayer onPrepared -> Play");
+                        try {
+                            if (getVideoPausedPosition() > 0)
+                                mediaPlayer.seekTo(getVideoPausedPosition());
+                            mediaPlayer.start();
+                            //set duration of video
+                            Log.i(Const.APP_TAG, "OnPrepareListener GetDuration: " +
+                                    mediaPlayer.getDuration() + " ms");
+                            mRPCComponentsManager.setVideoControllerDuration(mediaPlayer.getDuration());
+                            setVideoPlayed(true);
+                            setVideoPrepared(true);
+                            if (videoWasPaused())
+                                mediaPlayer.pause();
+                            else
+                                startVideoTimer();
+
+                        } catch (IllegalStateException e) {
+                            Log.e(Const.APP_TAG, e.getMessage(),e);
+                        }
+                    }
+                });
                 mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
                 mMediaPlayer.prepare();
             } catch (Exception e) {
                 Logger.e("error: " + e.getMessage(), e);
                 // set duration of video
-                mVideoController.setVideoDuration(-1);
+                mRPCComponentsManager.setVideoControllerDuration(-1);
             }
         } else {
             Logger.i("No video to play");

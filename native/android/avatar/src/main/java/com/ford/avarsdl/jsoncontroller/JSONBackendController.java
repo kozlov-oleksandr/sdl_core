@@ -8,6 +8,7 @@ import android.os.Message;
 import android.util.DisplayMetrics;
 import android.view.Window;
 
+import com.ford.avarsdl.util.AppUtils;
 import com.ford.avarsdl.views.AvatarActivity;
 import com.ford.avarsdl.views.EulaActivity;
 import com.ford.avarsdl.views.SafeToast;
@@ -17,16 +18,18 @@ import com.ford.avarsdl.util.Logger;
 import com.ford.avarsdl.util.RPCConst;
 import com.ford.avarsdl.util.Utils;
 
+import java.io.IOException;
+
 public class JSONBackendController extends JSONController {
 
-	public JSONBackendController(AvatarActivity activity) {
-		super(RPCConst.CN_BACKEND);
-		mActivity = activity;
-	}
-	
-	public JSONBackendController(ITcpClient client) {
-		super(RPCConst.CN_BACKEND,client);
-	}
+    public JSONBackendController(AvatarActivity activity) throws IOException {
+        super(RPCConst.CN_BACKEND);
+        mActivity = activity;
+    }
+
+    public JSONBackendController(ITCPClient client) throws IOException {
+        super(RPCConst.CN_BACKEND, client);
+    }
 
 	public void sendFullScreenRequest(Boolean value) {
 		String method = RPCConst.CN_BACKEND_CLIENT + "." + EBEMethods.onFullScreenChanged.toString();
@@ -300,7 +303,7 @@ public class JSONBackendController extends JSONController {
 	private String getOSInfo() {
 		mJSONParser.putEmptyJSONObject();
 		mJSONParser.putStringValue("OS", "Android");
-		mJSONParser.putStringValue("OSVersion", getOSVersion());
+		mJSONParser.putStringValue("OSVersion", AppUtils.getOSVersion());
 		mJSONParser.putBooleanValue("isNative", true);
 		return mJSONParser.getJSONObject();
 	}
@@ -314,43 +317,13 @@ public class JSONBackendController extends JSONController {
 		return mJSONParser.getJSONObject();
 	}
 
-	public String getOSVersion() {
-		Logger.i(getClass().getSimpleName() + " getAndroidVersion:" + Build.VERSION.SDK_INT);
-		switch (Build.VERSION.SDK_INT) {
-		case 8:
-			return "2.2";
-		case 9:
-			return "2.3.1";
-		case 10:
-			return "2.3.3";
-		case 11:
-			return "3.0";
-		case 12:
-			return "3.1";
-		case 13:
-			return "3.2";
-		case 14:
-			return "4.0";
-		case 15:
-			return "4.0.3";
-		case 16:
-			return "4.1.0";
-		case 17:
-			return "4.2.0";
-		case 18:
-			return "4.3.0";
-		default:
-			return "unknown";
-		}
-	}
-
 	private String sendSupportEmail() {
 		mJSONParser.putEmptyJSONObject();
 		Intent i = new Intent(Intent.ACTION_SEND);
 		i.setType("message/rfc822");
 		i.putExtra(Intent.EXTRA_EMAIL, new String[] { Const.SUPPORT_EMAIL });
 		i.putExtra(Intent.EXTRA_SUBJECT, "subject of email");
-		i.putExtra(Intent.EXTRA_TEXT, "Sent from Android OS v." + getOSVersion());
+		i.putExtra(Intent.EXTRA_TEXT, "Sent from Android OS v." + AppUtils.getOSVersion());
 		try {
 			mActivity.startActivity(Intent.createChooser(i, "Send mail..."));
 			mJSONParser.putStringValue("result", "OK");

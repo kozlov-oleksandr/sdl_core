@@ -1,37 +1,52 @@
 package com.ford.avarsdl.jsoncontroller;
 
-import java.util.HashMap;
+import android.util.Log;
+
+import com.ford.avarsdl.jsonparser.EMBMethods;
+import com.ford.avarsdl.jsonparser.JSONParser;
+import com.ford.avarsdl.util.Const;
+import com.ford.avarsdl.util.RPCConst;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.ford.avarsdl.jsonparser.EMBMethods;
-import com.ford.avarsdl.jsonparser.JSONParser;
-import com.ford.avarsdl.util.Logger;
-import com.ford.avarsdl.util.RPCConst;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.util.HashMap;
 
-public class JSONController {
+public abstract class JSONController {
 
-	public JSONController(String name, ITcpClient tcpStub) {
-		mJSONParser = new JSONParser();
+    public static interface JSONControllerCallback {
+        void onRegister() throws IOException;
+        void onError(String message);
+    }
+
+	public JSONController(String name, ITCPClient tcpStub) throws IOException {
+        // create client with connection to server
+        if (tcpStub != null) {
+            mTCPClient = tcpStub;
+        } else {
+            mTCPClient = new TCPClient();
+        }
+        SocketAddress socketAddress = new InetSocketAddress(RPCConst.LOCALHOST, RPCConst.TCP_SERVER_PORT);
+        mTCPClient.connect(socketAddress);
+
+        mJSONParser = new JSONParser();
 		mName = name;
 		mWaitResponseQueue = new HashMap<Integer, String>();
-		// create client with connection to server
-		if (tcpStub != null) {
-			mTCPClient = tcpStub;
-		} else {
-			mTCPClient = new TCPClient(RPCConst.LOCALHOST, RPCConst.TCP_SERVER_PORT);
-		}
+
 		// start listen server socket
 		listenSocket();
 	}
 
-	public JSONController(String name) {
+	public JSONController(String name) throws IOException {
 		this(name, null);
 	}
 
 	public void register(int initId) {
-		String method = RPCConst.CN_MESSAGE_BROKER + "." + EMBMethods.registerComponent.toString();
+		String method = RPCConst.CN_MESSAGE_BROKER + "."
+				+ EMBMethods.registerComponent.toString();
 		JSONObject jsonParams = new JSONObject();
 		try {
 			jsonParams.put("componentName", mName);
@@ -39,13 +54,15 @@ public class JSONController {
 			e.printStackTrace();
 		}
 		mJSONParser.putEmptyJSONRPCObject();
-		String jsonMsg = mJSONParser.createJSONServerRequest(method, jsonParams, initId);
+		String jsonMsg = mJSONParser.createJSONServerRequest(method,
+				jsonParams, initId);
 		mWaitResponseQueue.put(initId, method);
 		sendJSONMsg(jsonMsg);
 	}
 
 	public void unregister(int initId) {
-		String method = RPCConst.CN_MESSAGE_BROKER + "." + EMBMethods.unregisterComponent.toString();
+		String method = RPCConst.CN_MESSAGE_BROKER + "."
+				+ EMBMethods.unregisterComponent.toString();
 		JSONObject jsonParams = new JSONObject();
 		try {
 			jsonParams.put("componentName", mName);
@@ -53,7 +70,8 @@ public class JSONController {
 			e.printStackTrace();
 		}
 		mJSONParser.putEmptyJSONRPCObject();
-		String jsonMsg = mJSONParser.createJSONServerRequest(method, jsonParams, initId);
+		String jsonMsg = mJSONParser.createJSONServerRequest(method,
+				jsonParams, initId);
 		mWaitResponseQueue.put(initId, method);
 		sendJSONMsg(jsonMsg);
 	}
@@ -61,7 +79,8 @@ public class JSONController {
 	public void sendRequest(String method, String jsonParams) {
 		int id = getPackageId();
 		mJSONParser.putEmptyJSONRPCObject();
-		String jsonMsg = mJSONParser.createJSONServerRequest(method, jsonParams, id);
+		String jsonMsg = mJSONParser.createJSONServerRequest(method,
+				jsonParams, id);
 		mWaitResponseQueue.put(id, method);
 		sendJSONMsg(jsonMsg);
 	}
@@ -72,7 +91,7 @@ public class JSONController {
 		sendJSONMsg(jsonMsg);
 	}
 
-	public void close() {
+	public void close() throws IOException {
 		mStopListening = true;
 		while (!mListeningIsStoped) {
 			try {
@@ -85,9 +104,9 @@ public class JSONController {
 		mWaitResponseQueue.clear();
 	}
 
-	public boolean isRegistered() {
-		return mRegistered;
-	}
+    public boolean isConnected() {
+        return mTCPClient.isConnected() && mWaitResponseQueue.size() > 0;
+    }
 
 	public String getResponse() {
 		if (mRequestResponse != null) {
@@ -98,25 +117,35 @@ public class JSONController {
 		return mRequestResponse;
 	}
 
-	// ==================================================================
+    public void setCallback(JSONControllerCallback mCallback) {
+        this.mCallback = mCallback;
+    }
+
+    // ==================================================================
 	// protected and private section
 	// ==================================================================
+	private final boolean DEBUG = true;
+	private final String TAG_NAME = "JSONController";
 	private String mName = null;
-	private ITcpClient mTCPClient = null;
+	private ITCPClient mTCPClient = null;
 	private int mMaxPackageId = 0;
 	private int mMinPackageId = 0;
 	private int mPackageId = 0;
-	private volatile boolean mStopListening = false; // indicates stop listening intention
-	private volatile boolean mListeningIsStoped = false; // indicates stop listening action
-	private boolean mRegistered = false;
-	protected HashMap<Integer, String> mWaitResponseQueue; // map of <ID,METHOD> to recognize responses
+    private JSONControllerCallback mCallback;
+	private volatile boolean mStopListening = false; // indicates stop listening
+														// intension
+	private volatile boolean mListeningIsStoped = false; // indicates stop
+															// listening action
+	protected HashMap<Integer, String> mWaitResponseQueue; // map of <ID,METHOD>
+															// to recognize
+															// responses
 	protected String mRequestResponse = null;
 	protected JSONParser mJSONParser;
 
 	protected void sendResponse(int id, String result) {
 		mJSONParser.putEmptyJSONRPCObject();
 		String jsonMsg = mJSONParser.createJSONResponse(id, result);
-		Logger.i(getClass().getSimpleName() + " id = " + String.valueOf(id) + "; msg = " + jsonMsg);
+		logMsg("id = " + String.valueOf(id) + "; msg = " + jsonMsg);
 		sendJSONMsg(jsonMsg);
 	}
 
@@ -125,8 +154,12 @@ public class JSONController {
 	}
 
 	protected void sendJSONMsg(String jsonMsg) {
-		mTCPClient.sendMsg(jsonMsg);
-		Logger.i(getClass().getSimpleName() + " JSON Msg sent: " + jsonMsg);
+        try {
+            mTCPClient.sendMsg(jsonMsg);
+            logMsg(" JSON message sent: " + jsonMsg);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 	}
 
 	/**
@@ -160,21 +193,21 @@ public class JSONController {
 			method = method.substring(method.indexOf(".") + 1, method.length());
 			try {
 				switch (EMBMethods.valueOf(method)) {
-                    case registerComponent:
-                        int minVal = Integer.parseInt(mJSONParser.getResult());
-                        processRegistrationResponse(minVal);
-                        return true;
-                    case unregisterComponent:
-                        processUnregistrationResponse();
-                        return true;
-                    case subscribeTo:
-                        Logger.i(getClass().getSimpleName() + " Component subscribed");
-                        return true;
-                    case unsubscribeFrom:
-                        Logger.i(getClass().getSimpleName() + " Component unsubscribed");
-                        return true;
-                    default:
-                        return false;
+				case registerComponent:
+					int minVal = Integer.parseInt(mJSONParser.getResult());
+					processRegistrationResponse(minVal);
+					return true;
+				case unregisterComponent:
+					processUnregistrationResponse();
+					return true;
+				case subscribeTo:
+					logMsg("Component subscribed");
+					return true;
+				case unsubscribeFrom:
+					logMsg("Component unsubscribed");
+					return true;
+				default:
+					return false;
 				}// switch
 			} catch (IllegalArgumentException e) {
 				// its not a MB method
@@ -182,15 +215,16 @@ public class JSONController {
 			}
 		}
 		return false;
+
 	}
 
 	/**
 	 * Process response on RPC request of the controller
 	 * 
-	 * @param response - JSON response as a string
+	 * @param response
+	 *            : JSON response as a string
 	 */
 	protected void processResponse(String response) {
-
 	}
 
 	private int getPackageId() {
@@ -227,6 +261,8 @@ public class JSONController {
 		// should be overwritten for each component, that want to subscribe to
 	}
 
+	// ==============================================================================
+
 	private void processServerMsg(String msg) {
 		mJSONParser.putJSONObject(msg);
 		// check if it is a json-rpc 2.0
@@ -240,9 +276,8 @@ public class JSONController {
 				processResponse(msg);
 				removeFromResponseQueue(mJSONParser.getId());
 			}
-		} else {
-            Logger.w(getClass().getSimpleName() + " Received message is not JSON message");
-        }
+		} else
+			logMsg("Received message is not JSON message");
 	}
 
 	private void processRegistrationResponse(int minVal) {
@@ -250,33 +285,49 @@ public class JSONController {
 			mMinPackageId = minVal;
 			mMaxPackageId = mMinPackageId + RPCConst.ID_RANGE;
 			mPackageId = mMinPackageId;
-			mRegistered = true;
+
+            if (mCallback != null) {
+                mCallback.onRegister();
+            }
+
 			subscribeToProperties();
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
-		}
-	}
+		} catch (IOException e) {
+            if (mCallback != null) {
+                mCallback.onError(e.getMessage());
+            }
+        }
+    }
 
 	private void processUnregistrationResponse() {
 		mMinPackageId = 0;
 		mMaxPackageId = 0;
 		mPackageId = 0;
-		mRegistered = false;
 	}
 
 	private void listenSocket() {
 		// start listening in new thread
 		Thread socketListenerThread = new Thread(new Runnable() {
+
 			public void run() {
-				Logger.i(getClass().getSimpleName() + " Start reading input buffer");
+				logMsg("Start reading input buffer");
 				while (!mStopListening) {
 					try {
 						Thread.sleep(100);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-					String serverMsg = mTCPClient.receiveMsg();
-					if (serverMsg != null)
+                    String serverMsg = null;
+
+                    // TODO: Reconsider this case
+                    try {
+                        serverMsg = mTCPClient.receiveMsg();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (serverMsg != null)
 						processServerMsg(serverMsg);
 				}
 				mListeningIsStoped = true;
@@ -286,4 +337,11 @@ public class JSONController {
 		socketListenerThread.setPriority(Thread.MIN_PRIORITY);
 		socketListenerThread.start();
 	}
+
+	private void logMsg(String msg) {
+		if (DEBUG && Const.DEBUG) {
+			Log.i(TAG_NAME, msg);
+		}
+	}
+
 }
