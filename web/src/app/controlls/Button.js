@@ -95,7 +95,7 @@ MFT.Button = Em.View.extend(Ember.TargetActionSupport, {
 			},this.timer);
 		}
 
-        if (this.stopPropagation) {
+        if (event) {
             event.stopPropagation();
         }
 	},
@@ -137,7 +137,7 @@ MFT.Button = Em.View.extend(Ember.TargetActionSupport, {
 			this.triggerAction();
 		}
 
-        if (this.stopPropagation) {
+        if (event) {
             event.stopPropagation();
         }
 	},

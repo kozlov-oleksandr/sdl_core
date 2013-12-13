@@ -1794,9 +1794,9 @@
     text-transform: uppercase;
     position: absolute;
     font-size: 20px;
-    float: left;
     top: 148px;
     left: 15px;
+    width: 466px;
 }
 
 .fmInfoHdIco {
@@ -1957,7 +1957,7 @@
 .stationInfo {
     width: 200px;
     height: 50px;
-    left: 115px;
+    left: 86px;
     top: 29px;
 }
 
@@ -2217,4 +2217,26 @@
     border-radius: 3px;
     position: relative;
     margin: 0 4px;
+}
+
+#home_widgetMedia_tuneButtons {
+    height: 40px;
+    width: 120px;
+    top: 28px;
+    left: 248px;
+}
+
+#home_widgetMedia_tuneButtons .ffw-button {
+    width: 50px;
+    height: 38px;
+    color: #fff;
+    font-size: 22px;
+    border: 1px solid #393939;
+    border-radius: 2px;
+    display: inline-block;
+    margin-left: 6px;
+    position: relative;
+    text-align: center;
+    line-height: 38px;
+    vertical-align: top;
 }

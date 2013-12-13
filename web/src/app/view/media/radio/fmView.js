@@ -65,9 +65,9 @@ MFT.FMView = Em.ContainerView.create(MFT.LoadableView,{
                         '<div class="hdtitle">{{view.controler.currentActiveData.title}}</div>'+
                         '<div class="hdartist">{{view.controler.currentActiveData.artist}}</div>'+
                         '</div>'+
-                        '<div class="nonHDsonginfo not-visible" {{bindAttr class="view.controler.fmRDSTextIsHidden::visible"}}>{{view.songInfo}}</div>'+
-                        '<span class="STAName not-visible" {{bindAttr class=" view.controler.fmRDSTextIsHidden::visible"}}>STA-{{view.STAName}}</span>'+
-                        '<div class="fmgenre not-visible" {{bindAttr class="view.controler.genreIsVisible:visible "}}>{{view.controler.currentActiveData.genre}}</div>'
+                        '<div class="nonHDsonginfo not-visible visible" {{bindAttr class="view.controler.fmRDSTextIsHidden::visible"}}>{{view.songInfo}}</div>'+
+                        '<span class="STAName not-visible visible" {{bindAttr class=" view.controler.fmRDSTextIsHidden::visible"}}>STA-{{view.STAName}}</span>'+
+                        '<div class="fmgenre not-visible visible" {{bindAttr class="view.controler.genreIsHidden::visible "}}>{{view.controler.currentActiveData.genre}}</div>'
                 ),
                 /** Formate Station name according to HD or non HD State of Station*/
                 STAName: function(){
@@ -76,9 +76,18 @@ MFT.FMView = Em.ContainerView.create(MFT.LoadableView,{
                 }.property('controler.currentActiveData'),
 
                 /** Formate Song name according to HD or non HD State of Station*/
-                songInfo: function(){
-                    if(this.controler.get('currentActiveData'))
-                        return  this.controler.get('currentActiveData').title + ' - ' +  this.controler.get('currentActiveData').artist;
+                songInfo: function() {
+                    var songInfo = this.controler.get('currentActiveData');
+
+                    if (!(songInfo.title && songInfo.artist)) {
+                        if (songInfo.title) {
+                            return songInfo.title;
+                        } else if (songInfo.artist) {
+                            return songInfo.artist;
+                        }
+                    } else {
+                        return songInfo.title + ' - ' + songInfo.artist;
+                    }
                 }.property('controler.currentActiveData')
             }),
 

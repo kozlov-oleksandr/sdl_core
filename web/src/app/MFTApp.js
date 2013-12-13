@@ -83,5 +83,8 @@ MFT = Em.Application.create({
 		
 		/** set measurement systems to current localization*/
 		MFT.SettingsController.setMeasurementSystems();
+
+        /** Get saved presets from native mobile app **/
+        FFW.RevSDL.getNativeLocalPresets();
 	}
 });

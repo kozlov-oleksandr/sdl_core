@@ -119,6 +119,11 @@ FFW.RevSDL = FFW.RPCObserver.create({
                     Em.Logger.error("Error TuneDown request:" + response.result.resultCode);
                 }
                 break;
+            case this.getNativeLocalPresetsRequestId:
+                if (response.result.customPresets) {
+                    MFT.MediaController.setSDLPresets(response.result);
+                }
+                break;
         }
     },
 
@@ -166,6 +171,7 @@ FFW.RevSDL = FFW.RPCObserver.create({
     GetRadioDetailsRequestId: -1,
     TuneUpRequestId: -1,
     TuneDownRequestId: -1,
+    getNativeLocalPresetsRequestId: -1,
 
     /**
      * Sends a request for access to the management of HMI, through SDL interface
@@ -279,6 +285,36 @@ FFW.RevSDL = FFW.RPCObserver.create({
             "jsonrpc":	"2.0",
             "method":	"RevSDL.Show"
         };
+        this.client.send(JSONMessage);
+    },
+
+    /**
+     * Stop frequency scan on head unit, through SDL interface
+     **/
+    getNativeLocalPresets: function(){
+        this.getNativeLocalPresetsRequestId = this.client.generateId();
+
+        var JSONMessage = {
+            "jsonrpc":	"2.0",
+            "id": 		this.getNativeLocalPresetsRequestId,
+            "method":	"RevSDL.GetNativeLocalPresets"
+        };
+
+        this.client.send(JSONMessage);
+    },
+
+    /**
+     * Stop frequency scan on head unit, through SDL interface
+     **/
+    setNativeLocalPresets: function(data){
+        var JSONMessage = {
+            "jsonrpc":	"2.0",
+            "method":	"RevSDL.SetNativeLocalPresets",
+            params: {
+                customPresets: data
+            }
+        };
+
         this.client.send(JSONMessage);
     }
 });

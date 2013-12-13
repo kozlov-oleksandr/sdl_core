@@ -60,7 +60,7 @@ FFW.RPCClient = Em.Object.extend({
 		}
 
 		this.socket 			= (FFW.isAndroid || (FLAGS.EMULATE_ANDROID && FLAGS.EMULATE_WS)) ?  FFW.WebSocket.create({clientName: this.componentName}) : new WebSocket(this.url, 'sample');
-      
+
 		var self = this;
 
 		this.socket.onopen 		= function(evt) { self.onWSOpen(evt) };
@@ -183,13 +183,18 @@ FFW.RPCClient = Em.Object.extend({
 	
 	/*
      * stringify object and send via socket connection
- 	 */	
-	send: function(obj) {
-		var strJson = JSON.stringify(obj);
-		Em.Logger.log(strJson);
-		this.socket.send(strJson);
-	},
-	
+ 	 */
+    send: function(obj) {
+        var strJson = JSON.stringify(obj);
+        Em.Logger.log(strJson);
+
+        try {
+            this.socket.send(strJson);
+        } catch (exception) {
+            Em.Logger.error('ERROR: send websocket message failed');
+        }
+    },
+
 	/*
      * Generate id for new request to RPC component
 	 * Function has to be used as private
@@ -199,7 +204,5 @@ FFW.RPCClient = Em.Object.extend({
 		if (this.requestId >= this.idStart + this.idRange)
 			this.requestId = this.idStart;
 		return this.requestId;
-	},
-
-
-})
+	}
+});

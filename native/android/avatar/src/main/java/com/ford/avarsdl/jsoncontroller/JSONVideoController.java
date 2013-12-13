@@ -1,6 +1,7 @@
 package com.ford.avarsdl.jsoncontroller;
 
 import java.io.File;
+import java.io.IOException;
 
 import android.content.SharedPreferences;
 import android.util.Log;
@@ -31,7 +32,7 @@ public class JSONVideoController extends JSONController {
      *
      * @param activity : the application main activity
      */
-    public JSONVideoController(AvatarActivity activity) {
+    public JSONVideoController(AvatarActivity activity) throws IOException {
         super(RPCConst.CN_VIDEO);
         mActivity = activity;
     }

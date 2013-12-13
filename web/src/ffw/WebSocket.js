@@ -47,5 +47,5 @@ FFW.WebSocket = Em.Object.extend({
      * used for identification of sender and receiver 
 	 * of particular message from/to Android
  	 */	
-	 clientName: '',
+	 clientName: ''
 });

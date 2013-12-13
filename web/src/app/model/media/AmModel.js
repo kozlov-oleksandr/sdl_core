@@ -24,10 +24,10 @@ MFT.AmModel = Em.Object.create( {
 		],
 		/** Direct tune Data */
 		directTuneItems: {
-			600:MFT.PlaylistItem.create({frequency: 600}),
-			950:MFT.PlaylistItem.create({frequency: 950}),
-			1176:MFT.PlaylistItem.create({frequency: 1176}),
-			1370:MFT.PlaylistItem.create({frequency: 1370}),
+			600:MFT.PlaylistItem.create({frequency: '600'}),
+			950:MFT.PlaylistItem.create({frequency: '950'}),
+			1176:MFT.PlaylistItem.create({frequency: '1176'}),
+			1370:MFT.PlaylistItem.create({frequency: '1370'})
 		}
 	
 	}),
@@ -38,12 +38,12 @@ MFT.AmModel = Em.Object.create( {
 		selectedIndex: 					3,
 
 		items: {
-			0:MFT.PlaylistItem.create({frequency: 530}),
-			1:MFT.PlaylistItem.create({frequency: 950}),
-			2:MFT.PlaylistItem.create({frequency: 1270}),
-			3:MFT.PlaylistItem.create({frequency: 800}),
-			4:MFT.PlaylistItem.create({frequency: 1130}),
-			5:MFT.PlaylistItem.create({frequency: 760})
+			0:MFT.PlaylistItem.create({frequency: '530'}),
+			1:MFT.PlaylistItem.create({frequency: '950'}),
+			2:MFT.PlaylistItem.create({frequency: '1270'}),
+			3:MFT.PlaylistItem.create({frequency: '800'}),
+			4:MFT.PlaylistItem.create({frequency: '1130'}),
+			5:MFT.PlaylistItem.create({frequency: '760'})
 		}
 		
 	}),
@@ -53,13 +53,13 @@ MFT.AmModel = Em.Object.create( {
 		selectedIndex: 					2,
 		
 		items: {
-			0:MFT.PlaylistItem.create({frequency: 540}) ,
-			1:MFT.PlaylistItem.create({frequency: 630}),
-			2:MFT.PlaylistItem.create({frequency: 760}),
-			3:MFT.PlaylistItem.create({frequency: 800}),
-			4:MFT.PlaylistItem.create({frequency: 950}),
-			5:MFT.PlaylistItem.create({frequency: 1130})
+			0:MFT.PlaylistItem.create({frequency: '540'}) ,
+			1:MFT.PlaylistItem.create({frequency: '630'}),
+			2:MFT.PlaylistItem.create({frequency: '760'}),
+			3:MFT.PlaylistItem.create({frequency: '800'}),
+			4:MFT.PlaylistItem.create({frequency: '950'}),
+			5:MFT.PlaylistItem.create({frequency: '1130'})
 		}
-	}),
+	})
 	
 });

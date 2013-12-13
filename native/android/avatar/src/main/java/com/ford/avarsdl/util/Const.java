@@ -102,4 +102,14 @@ public class Const {
 
     public static final String PREFS_DEFAULT_IPADDR = "10.10.0.1";
     public static final Integer PREFS_DEFAULT_TCPPORT = 12345;
+
+    // Native section (between Android and Web View)
+    public static final String SHARED_PREF_NATIVE_LOCAL_PRESETS = "NativeLocalPresets";
+    public static final String JSON_KEY_CUSTOM_PRESETS = "customPresets";
+
+    /**
+     * Default Presets for the Radio Station unit
+     */
+    public static final String DEFAULT_RADIO_STATIONS_PRESETS =
+            "['87.9','90.9','105.1','98.5','106.3','93.5']";
 }

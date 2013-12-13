@@ -773,10 +773,10 @@ MFT.MediaController = Em.Object.create({
 	 * 0 - On
 	 * 1 - Off
 	 */
-	fmRDSTextOnOff: 1,
+	fmRDSTextOnOff: 0,
 
 	/** Enable/Disable PTYButton status  */
-	PTYButtonIsDisabled: true,
+	PTYButtonIsDisabled: false,
 
 	/*
 	 * Set Enable/Disable PTYButton status
@@ -792,7 +792,7 @@ MFT.MediaController = Em.Object.create({
 	}.observes('this.fmRDSTextOnOff'),
 
 	/** Fm RDSText visibility */
-	fmRDSTextIsHidden: true,
+	fmRDSTextIsHidden: false,
 
 	/** Current station is Hd */
 	isActiveHdData: false,
@@ -814,7 +814,7 @@ MFT.MediaController = Em.Object.create({
 	}.observes('this.isActiveHdData','this.fmRDSTextOnOff','MFT.AmModel.active'),
 
 	/** Visibility of genres label */
-	genreIsVisible: false,
+    genreIsHidden: false,
 
 	/**
 	 * Show genr label
@@ -823,9 +823,9 @@ MFT.MediaController = Em.Object.create({
 	 */
 	showGenreText: function(){
 		if ( this.isActiveHdData || !this.fmRDSTextOnOff) {
-			this.set('genreIsVisible',true);
+			this.set('genreIsHidden',false);
 		}
-			else this.set('genreIsVisible',false);
+			else this.set('genreIsHidden',true);
 	}.observes('this.isActiveHdData','this.fmRDSTextOnOff'),
 
 	/**
@@ -871,7 +871,7 @@ MFT.MediaController = Em.Object.create({
         this.currentDirectTuneData.set('selectedDirectTuneStation');
 		playlist.set('selectedIndex', index);
 
-        if (playlist.name == 'fm1') {
+        if (MFT.FmModel.band.value == 0 || (MFT.States.home.active && this.activeState.indexOf('fm') != -1 && MFT.FmModel.band.activeBand == 0)) {
             FFW.RevSDL.sendTuneRadioRequest(this.get('currentActiveData'));
         }
 	},
@@ -902,10 +902,16 @@ MFT.MediaController = Em.Object.create({
 
 	/** Store preset station data */
 	onStorePreset: function(playlistItem, playlist,index){
+        var presets = [];
+
 		/** Copy data from active station to current pressed*/
 		if(this.directTuneSelected){
 			if(!MFT.SiriusModel.active){
-				playlistItem.copy(this.currentDirectTuneData.get('selectedDirectItem'));
+                if (MFT.FmModel.band.value == 0) {
+                    playlistItem.set('frequency', this.currentDirectTuneData.get('selectedDirectItem').frequency);
+                } else {
+				    playlistItem.copy(this.currentDirectTuneData.get('selectedDirectItem'));
+                }
 			}else{
 
 				playlistItem.copy(MFT.SiriusModel.directTunestations.get('selectedDirectItem'));
@@ -919,19 +925,21 @@ MFT.MediaController = Em.Object.create({
 
 		// Show message
 		this.showStorePresetMessage();
+
+        if (MFT.FmModel.band.value == 0 || (MFT.States.home.active && this.activeState.indexOf('fm') != -1 && MFT.FmModel.band.activeBand == 0)) {
+            for (var key in MFT.FmModel.fm1.items) {
+                presets.push(MFT.FmModel.fm1.items[key].frequency);
+            }
+
+            FFW.RevSDL.setNativeLocalPresets(presets);
+        }
 	},
 
     /** Set presets, when was changed presets on the HMI **/
     setSDLPresets: function (data) {
-        var i,
-            items = {};
-
-        for (i=0; i < data.customPresets.length; i++) {
-            items[i] = MFT.PlaylistItem.create({frequency: data.customPresets[i]})
+        for (var i = 0; i < data.customPresets.length; i++) {
+            MFT.FmModel.fm1.items[i].set('frequency', data.customPresets[i]);
         }
-
-        MFT.FmModel.fm1.set('items', items);
-        FFW.RevSDL.sendShowRequest();
     },
 
 	/** Player Next track event*/
@@ -1035,19 +1043,37 @@ MFT.MediaController = Em.Object.create({
 
 	/** Direct tune Enter press handeler */
 	onDirectTuneSet: function() {
+        var presetActive = false;
+
 		clearInterval(this.directTuneTimer);
 		this.set('directTuneFinished', false);
 		this.set('directKeypressed', false);
-		if(!MFT.States.media.radio.sirius.active){
 
-			this.currentDirectTuneData.set('selectedDirectTuneStation',this.directTune.toString().replace(/,/g,''));
-		}else{
-			//Select saved direct tune data from SiriusModel
-			this.currentDirectTuneData.set('selectedDirectTuneStation',Number(this.directTune.toString().replace(/,/g,'')) % 20);
-			// Dinamicaly sett current station number to sirius direct data
-			this.currentDirectTuneData.selectedDirectItem.set('channel','Channel '+this.directTune.toString().replace(/,/g,''));
-		}
-		this.set('directTuneSelected', true);
+        for (var key in this.currentModuleData.items) {
+            if (this.directTune.toString().replace(/,/g,'') === this.currentModuleData.items[key].frequency.replace('.', '')) {
+                presetActive = true;
+
+                this.set('directTuneSelected', false);
+
+                this.currentModuleData.set('selectedIndex',Number(key));
+
+                break;
+            }
+        }
+
+        if (!presetActive) {
+            if(!MFT.States.media.radio.sirius.active){
+                this.currentDirectTuneData.set('selectedDirectTuneStation',this.directTune.toString().replace(/,/g,''));
+            }else{
+                //Select saved direct tune data from SiriusModel
+                this.currentDirectTuneData.set('selectedDirectTuneStation',Number(this.directTune.toString().replace(/,/g,'')) % 20);
+                // Dinamicaly sett current station number to sirius direct data
+                this.currentDirectTuneData.selectedDirectItem.set('channel','Channel '+this.directTune.toString().replace(/,/g,''));
+            }
+
+            this.set('directTuneSelected', true);
+        }
+
 		this.set('directTune', [] );
 
         if (MFT.States.media.radio.fm.active && MFT.FmModel.band.value == 0) {
@@ -1059,6 +1085,7 @@ MFT.MediaController = Em.Object.create({
     /** Set Direct Tune Station, when was changed current station on the HMI **/
     setSDLDirectTuneStation: function(data) {
         var presetActive = false,
+            index,
             frequency = data.radioStation.frequency.toString() + (data.radioStation.fraction ? data.radioStation.fraction.toString() : "0"),
             frequencyIndex = Number(frequency),
             station = MFT.FmModel.directTunestations.directTuneItems[frequencyIndex];
@@ -1069,15 +1096,14 @@ MFT.MediaController = Em.Object.create({
 
         for (var key in MFT.FmModel.fm1.items) {
             if (frequency === MFT.FmModel.fm1.items[key].frequency.replace('.', '')) {
-                var index = Number(key);
+                index = Number(key);
+
+                presetActive = true;
 
                 this.set('directTuneSelected', false);
 
                 MFT.FmModel.fm1.set('selectedIndex',index);
-
                 station = MFT.FmModel.fm1.items[index];
-
-                presetActive = true;
 
                 break;
             }
@@ -1101,7 +1127,8 @@ MFT.MediaController = Em.Object.create({
         if (!presetActive) {
             MFT.FmModel.directTunestations.set('selectedDirectTuneStation', frequencyIndex);
 
-            if (MFT.States.media.radio.fm.active && MFT.FmModel.band.value == 0) {
+            if ((MFT.States.media.radio.fm.active && MFT.FmModel.band.value == 0)
+                || (MFT.States.home.active && this.activeState.indexOf('fm') != -1 && MFT.FmModel.band.activeBand == 0)) {
                 this.set('directTuneSelected', true);
             }
         }

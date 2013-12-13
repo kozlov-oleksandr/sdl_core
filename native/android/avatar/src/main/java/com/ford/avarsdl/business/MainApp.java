@@ -1,11 +1,14 @@
 package com.ford.avarsdl.business;
 
 import android.app.Application;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.preference.PreferenceManager;
 
 import com.ford.avarsdl.util.AppUtils;
+import com.ford.avarsdl.util.Const;
 import com.ford.avarsdl.util.Logger;
 
 import java.io.File;
@@ -48,6 +51,8 @@ public class MainApp extends Application {
         Logger.i("+++ Create RevSDL Application +++");
         Logger.i("- processors: " + Runtime.getRuntime().availableProcessors());
         Logger.i("OS ver: " + Build.VERSION.RELEASE + ", API lvl: " + Build.VERSION.SDK_INT);
+
+        init();
     }
 
     public File getExternalFilesDir(String type) {
@@ -64,5 +69,15 @@ public class MainApp extends Application {
 
     public void runInUIThread(Runnable r, long delay) {
         mUIHandler.postDelayed(r, delay);
+    }
+
+    private void init() {
+        // Set default radio stations Presets
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if (!sharedPreferences.contains(Const.SHARED_PREF_NATIVE_LOCAL_PRESETS)) {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString(Const.SHARED_PREF_NATIVE_LOCAL_PRESETS, Const.DEFAULT_RADIO_STATIONS_PRESETS);
+            editor.commit();
+        }
     }
 }

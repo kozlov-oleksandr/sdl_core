@@ -1,8 +1,10 @@
 package com.ford.avarsdl.views;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.bluetooth.BluetoothAdapter;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -25,6 +27,9 @@ import com.ford.avarsdl.util.Logger;
 public class AppSetupDialog extends DialogFragment {
 
     private static final String TITLE_KEY = "dialog_title";
+    private static final int REQUEST_ENABLE_BT = 100;
+    private boolean isDeviceSupportBluetooth = false;
+    private boolean isBluetoothEnabled = false;
 
     public static AppSetupDialog newInstance(int title) {
         AppSetupDialog appSetupDialog = new AppSetupDialog();
@@ -32,6 +37,18 @@ public class AppSetupDialog extends DialogFragment {
         bundle.putInt(TITLE_KEY, title);
         appSetupDialog.setArguments(bundle);
         return appSetupDialog;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_CANCELED) {
+            SafeToast.showToastAnyThread(getString(R.string.bluetooth_not_enabled));
+            return;
+        }
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_ENABLE_BT) {
+            processBluetoothEnabledOnDevice();
+        }
     }
 
     @Override
@@ -50,9 +67,13 @@ public class AppSetupDialog extends DialogFragment {
                 .setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(RadioGroup group, int checkedId) {
-                        boolean transportOptionsEnabled = checkedId == R.id.selectprotocol_radioWiFi;
-                        ipAddressText.setEnabled(transportOptionsEnabled);
-                        tcpPortText.setEnabled(transportOptionsEnabled);
+                        boolean isWiFiEnabled = checkedId == R.id.selectprotocol_radioWiFi;
+                        ipAddressText.setEnabled(isWiFiEnabled);
+                        tcpPortText.setEnabled(isWiFiEnabled);
+
+                        if (!isWiFiEnabled) {
+                            processBluetoothEnabledOnDevice();
+                        }
                     }
                 });
 
@@ -69,6 +90,10 @@ public class AppSetupDialog extends DialogFragment {
         transportGroup.check(transportType == Const.KEY_TCP ? R.id.selectprotocol_radioWiFi :
                 R.id.selectprotocol_radioBT);
 
+        if (transportType == Const.KEY_BLUETOOTH) {
+            processBluetoothEnabledOnDevice();
+        }
+
         return new AlertDialog.Builder(getActivity())
                 .setTitle(title)
                 .setCancelable(false)
@@ -76,6 +101,18 @@ public class AppSetupDialog extends DialogFragment {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                if (!isDeviceSupportBluetooth) {
+                                    SafeToast.showToastAnyThread(getString(
+                                            R.string.bluetooth_not_supported));
+                                    return;
+                                }
+
+                                if (!isBluetoothEnabled) {
+                                    SafeToast.showToastAnyThread(getString(
+                                            R.string.bluetooth_not_enabled));
+                                    return;
+                                }
+
                                 String ipAddressString = ipAddressText.getText().toString();
                                 int tcpPortInt;
                                 try {
@@ -95,12 +132,30 @@ public class AppSetupDialog extends DialogFragment {
                                 prefsEditor.putInt(Const.PREFS_KEY_TRANSPORT_TYPE, transportType);
                                 prefsEditor.commit();
 
-                                Intent intent = new Intent(getActivity().getApplicationContext(), SDLService.class);
+                                Intent intent = new Intent(getActivity().getApplicationContext(),
+                                        SDLService.class);
                                 getActivity().startService(intent);
                             }
                         }
                 )
                 .setView(dialogView)
                 .create();
+    }
+
+    private void processBluetoothEnabledOnDevice() {
+        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (mBluetoothAdapter == null) {
+            // Bluetooth is not supported by device
+            isDeviceSupportBluetooth = false;
+        } else {
+            isDeviceSupportBluetooth = true;
+            if (!mBluetoothAdapter.isEnabled()) {
+                // Bluetooth is not enable
+                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+            } else {
+                isBluetoothEnabled = true;
+            }
+        }
     }
 }
