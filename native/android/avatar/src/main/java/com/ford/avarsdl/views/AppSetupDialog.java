@@ -42,10 +42,10 @@ public class AppSetupDialog extends DialogFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_CANCELED) {
+        /*if (resultCode == Activity.RESULT_CANCELED && requestCode == REQUEST_ENABLE_BT) {
             SafeToast.showToastAnyThread(getString(R.string.bluetooth_not_enabled));
             return;
-        }
+        }*/
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_ENABLE_BT) {
             processBluetoothEnabledOnDevice();
         }
@@ -63,6 +63,18 @@ public class AppSetupDialog extends DialogFragment {
         ipAddressText.setEnabled(false);
         tcpPortText.setEnabled(false);
 
+        final SharedPreferences prefs = getActivity().getSharedPreferences(Const.PREFS_NAME, 0);
+        String ipAddressString = prefs.getString(Const.PREFS_KEY_IPADDR, Const.PREFS_DEFAULT_IPADDR);
+        int tcpPortInt = prefs.getInt(Const.PREFS_KEY_TCPPORT, Const.PREFS_DEFAULT_TCPPORT);
+        final int[] transportType = {prefs.getInt(
+                Const.PREFS_KEY_TRANSPORT_TYPE,
+                Const.PREFS_DEFAULT_TRANSPORT_TYPE)};
+
+        ipAddressText.setText(ipAddressString);
+        tcpPortText.setText(String.valueOf(tcpPortInt));
+
+        transportGroup.check(transportType[0] == Const.KEY_TCP ? R.id.selectprotocol_radioWiFi :
+                R.id.selectprotocol_radioBT);
         transportGroup
                 .setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                     @Override
@@ -70,27 +82,16 @@ public class AppSetupDialog extends DialogFragment {
                         boolean isWiFiEnabled = checkedId == R.id.selectprotocol_radioWiFi;
                         ipAddressText.setEnabled(isWiFiEnabled);
                         tcpPortText.setEnabled(isWiFiEnabled);
-
                         if (!isWiFiEnabled) {
+                            transportType[0] = Const.KEY_BLUETOOTH;
                             processBluetoothEnabledOnDevice();
+                        } else {
+                            transportType[0] = Const.KEY_TCP;
                         }
                     }
                 });
 
-        final SharedPreferences prefs = getActivity().getSharedPreferences(Const.PREFS_NAME, 0);
-        String ipAddressString = prefs.getString(Const.PREFS_KEY_IPADDR, Const.PREFS_DEFAULT_IPADDR);
-        int tcpPortInt = prefs.getInt(Const.PREFS_KEY_TCPPORT, Const.PREFS_DEFAULT_TCPPORT);
-        int transportType = prefs.getInt(
-                Const.PREFS_KEY_TRANSPORT_TYPE,
-                Const.PREFS_DEFAULT_TRANSPORT_TYPE);
-
-        ipAddressText.setText(ipAddressString);
-        tcpPortText.setText(String.valueOf(tcpPortInt));
-
-        transportGroup.check(transportType == Const.KEY_TCP ? R.id.selectprotocol_radioWiFi :
-                R.id.selectprotocol_radioBT);
-
-        if (transportType == Const.KEY_BLUETOOTH) {
+        if (transportType[0] == Const.KEY_BLUETOOTH) {
             processBluetoothEnabledOnDevice();
         }
 
@@ -101,13 +102,15 @@ public class AppSetupDialog extends DialogFragment {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                if (!isDeviceSupportBluetooth) {
+                                if (transportType[0] == Const.KEY_BLUETOOTH &&
+                                        !isDeviceSupportBluetooth) {
                                     SafeToast.showToastAnyThread(getString(
                                             R.string.bluetooth_not_supported));
                                     return;
                                 }
 
-                                if (!isBluetoothEnabled) {
+                                if (transportType[0] == Const.KEY_BLUETOOTH &&
+                                        !isBluetoothEnabled) {
                                     SafeToast.showToastAnyThread(getString(
                                             R.string.bluetooth_not_enabled));
                                     return;
