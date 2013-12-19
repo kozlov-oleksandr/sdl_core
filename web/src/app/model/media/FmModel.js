@@ -20,15 +20,15 @@ MFT.FmModel = Em.Object.create({
 
         this._super();
 
-        for (i = 879; i <= 1079; i+=2) {
+        for (i = 879; i <= 1079; i++) {
             directTunes.push(i.toString().split(''));
             directTuneItems[i] = MFT.PlaylistItem.create({frequency: frequency+'.'+fraction});
 
-            if (fraction < 8) {
-                fraction+=2;
+            if (fraction < 9) {
+                fraction++;
             } else {
                 frequency++;
-                fraction = 1;
+                fraction = 0;
             }
         }
 
