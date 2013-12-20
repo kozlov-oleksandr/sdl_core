@@ -1085,7 +1085,7 @@ MFT.MediaController = Em.Object.create({
     /** Set Direct Tune Station, when was changed current station on the HMI **/
     setSDLDirectTuneStation: function(data) {
         var presetActive = false,
-            frequency = data.radioStation.frequency.toString() + '.' + (data.radioStation.fraction == 0 ? data.radioStation.fraction+"0" : data.radioStation.fraction),
+            frequency = data.radioStation.frequency.toString() + '.' + (data.radioStation.fraction),
             frequencyIndex = Number(frequency.replace('.','')),
             station = MFT.FmModel.directTunestations.directTuneItems[frequencyIndex];
 
