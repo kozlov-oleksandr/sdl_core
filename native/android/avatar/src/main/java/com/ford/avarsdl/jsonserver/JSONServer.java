@@ -123,7 +123,6 @@ public class JSONServer extends Thread {
 			} catch (InterruptedException e1) {
 				e1.printStackTrace();
 			}
-            processSocketsConnection();
             //go through all clients readers and try to read msg
             if (mClientsReadersPool != null) {
                 for (int i = 0; i < mClientsReadersPool.size(); i++) {
@@ -143,20 +142,6 @@ public class JSONServer extends Thread {
             }
 		}
 	}
-
-    private void processSocketsConnection() {
-        /*boolean result = true;
-        for (Socket socket : mClientsSocketsPool) {
-            Logger.w(getClass().getSimpleName() + " Socket: " + socket.isConnected() + " " + socket.isClosed());
-            if (!socket.isConnected() || socket.isClosed()) {
-                result = false;
-                break;
-            }
-        }
-        if (!result) {
-            Logger.w(getClass().getSimpleName() + " Socket disconnected");
-        }*/
-    }
 	
 	//method for sending messages from native code
 	private int Send(int ctrlIndex, String data) {
