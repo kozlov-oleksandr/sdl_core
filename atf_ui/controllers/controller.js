@@ -7,11 +7,11 @@ controller.saveConfiguration = function(data, res) {
     var fs = require("fs");
 
     fs.writeFile(
-        "/home/amelnik/rep/ATF_UI/atf_ui/config.json",
+        __dirname + "config.json",
         JSON.stringify( data ),
         "utf8",
         function(){ // callback function
-            mainConfig = require("/home/amelnik/rep/ATF_UI/atf_ui/config.json");
+            mainConfig = require(__dirname + "config.json");
             res.render('test_suite', { title: 'Test suite'});
         }
     );
