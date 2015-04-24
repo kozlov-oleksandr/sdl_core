@@ -1,0 +1,14 @@
+{
+  "name": "atf",
+  "version": "1.0.0",
+  "description": "ATF UI project",
+  "main": "index.js",
+  "scripts": {
+    "test": "Hello"
+  },
+  "author": "AMelnik",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.12.3"
+  }
+}

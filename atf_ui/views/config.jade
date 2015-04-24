@@ -1,0 +1,36 @@
+extends layout
+
+block content
+    h1= title
+    p(style={color: '#3c78d8'}) Welcome to #{title}
+
+    #main_container(class='main_container')
+        form(action='/save',method='post')
+            p SDL file name
+            input(name='file_path')
+
+            p heartBeat timeout
+            input(name='hb_timeout')
+
+            p testRecord folder
+            input(name='testRecord_path')
+
+            p Mobile connection string
+            input(name='MOB_connection_str')
+
+            p HMI connection string
+            input(name='HMI_connection_str')
+
+            p PerfLog connection string
+            input(name='PerfLog_connection_str')
+
+            p Time for launch SDLProc
+            input(name='launch_time')
+
+            p terminal CMD
+            input(name='terminal_name')
+
+            p
+            input(type='submit')
+
+    a(class='button', href='http://localhost:3000') Back
