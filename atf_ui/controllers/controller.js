@@ -7,11 +7,12 @@ controller.saveConfiguration = function(data, res) {
     var fs = require("fs");
 
     fs.writeFile(
-        __dirname + "config.json",
+        "/tmp/config.json",
         JSON.stringify( data ),
         "utf8",
         function(){ // callback function
-            mainConfig = require(__dirname + "config.json");
+            mainConfig = require("/tmp/config.json");
+            console.log(__dirname);
             res.render('test_suite', { title: 'Test suite'});
         }
     );
