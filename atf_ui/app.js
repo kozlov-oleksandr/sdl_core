@@ -8,11 +8,25 @@ var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var controller = require('./controllers/controller.js');
+var fs = require('fs');
 
 var app = express();
 
-// main configuration Object
-var mainConfig = null;
+/**
+ * ASYNC method of read configuration data from FS
+ *
+ * Used app.locals to share variables data access for routes namespace
+ */
+fs.readFile('/tmp/config.json', 'utf8', function (err, data) {
+    if (err) {
+        console.log("No predefined configuration found...");
+        app.locals.mainConfig = null;
+        return;
+    }
+    app.locals.mainConfig = JSON.parse(data);
+    console.log(app.locals.mainConfig);
+    console.log("Read configuration...................");
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

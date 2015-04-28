@@ -1,24 +1,42 @@
 var express = require('express');
 var controller = {};
 
-controller.saveConfiguration = function(data, res) {
+/**
+ * Method to save configuration data from config.jade view
+ * to /tmp/config.json
+ * @param req
+ * @param res
+ */
+controller.saveConfiguration = function(req, res) {
 
-    // Writing...
     var fs = require("fs");
 
-    fs.writeFile(
+    // SYNC method to write configuration data to FS
+    fs.writeFileSync(
         "/tmp/config.json",
-        JSON.stringify( data ),
-        "utf8",
-        function(){ // callback function
-            mainConfig = require("/tmp/config.json");
-            console.log(__dirname);
-            res.render('test_suite', { title: 'Test suite'});
-        }
+        JSON.stringify( req.body ),
+        "utf8"
     );
 
-    // And then, to read it...
-    //mainConfig = require("./config.json");
+    // SYNC method
+    var data = fs.readFileSync('/tmp/config.json', 'utf8');
+
+    // Added verification for saved configuration on file system with data from filled form of config.jade view
+    // Verification is comparison of read data from FS and converted data object to string
+    if (JSON.stringify( req.body ) === data) {
+
+        req.app.locals.mainConfig = JSON.parse(data);
+        console.log(req.app.locals.mainConfig);
+        console.log("Data saved successfully...................");
+        // Go to next configuration view 'test_suite'
+        res.render('test_suite', { title: 'Test suite', config: req.app.locals.mainConfig });
+        console.log("Test suite rendered...................");
+    } else {
+        console.log("Data wasn't saved successfully...................");
+        // Go to start page
+        res.render('index', { title: 'Express' });
+        console.log("Index rendered...................");
+    }
 };
 
 module.exports = controller;
