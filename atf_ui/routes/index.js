@@ -22,4 +22,12 @@ router.post('/save', function(req, res, next) {
     controller.saveConfiguration(req, res);
 });
 
+/* POST main configuration page form submit handler. */
+router.post('/upload', function(req, res, next) {
+    console.log('TRYING TO UPLOAD................');
+    console.log(req.body);
+    console.log(req.files);
+    res.redirect("back");
+});
+
 module.exports = router;

@@ -29,14 +29,14 @@ controller.saveConfiguration = function(req, res) {
         console.log(req.app.locals.mainConfig);
         console.log("Data saved successfully...................");
         // Go to next configuration view 'test_suite'
-        res.render('test_suite', { title: 'Test suite', config: req.app.locals.mainConfig });
         console.log("Test suite rendered...................");
     } else {
         console.log("Data wasn't saved successfully...................");
         // Go to start page
-        res.render('index', { title: 'Express' });
         console.log("Index rendered...................");
     }
+
+    res.redirect("back");
 };
 
 module.exports = controller;

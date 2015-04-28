@@ -4,6 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var multer  = require('multer');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -25,7 +26,7 @@ fs.readFile('/tmp/config.json', 'utf8', function (err, data) {
     }
     app.locals.mainConfig = JSON.parse(data);
     console.log(app.locals.mainConfig);
-    console.log("Read configuration...................");
+    console.log("Configuration read successful...................");
 });
 
 // view engine setup
@@ -39,6 +40,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(multer({
+    dest: '/tmp/uploads/',
+    //rename to original file name
+    rename: function (fieldname, filename) {
+        return filename; //return name
+    }
+}));
 
 app.use('/', routes);
 app.use('/users', users);

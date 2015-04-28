@@ -3,5 +3,14 @@ extends layout
 block content
     h1= title
     p Welcome to #{title}
+
+    #test_suite_configuration_container(class='main_container')
+        p Upload test cases
+        form(action="/upload", method="post", enctype="multipart/form-data")
+            input(type="file", name="file_upload", multiple)
+            input(type='submit', name="upload", value="upload")
+
+
+
     p #{JSON.stringify(config)}
     a(class='button', href='http://localhost:3000') Back
