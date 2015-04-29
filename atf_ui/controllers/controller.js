@@ -39,4 +39,42 @@ controller.saveConfiguration = function(req, res) {
     res.redirect("back");
 };
 
+/**
+ * Method to load configuration view test_suite.jade
+ *
+ * @param req
+ * @param res
+ */
+controller.testSuiteRun = function(req, res) {
+
+    res.render('test_suite', {
+        title: 'Test suite',
+        config: req.app.locals.mainConfig
+    });
+};
+
+/**
+ * UI AJAX post requests handler
+ * @param req
+ * @param res
+ */
+controller.test_suite_config = function(req, res) {
+
+    switch (req.body.objectData) {
+        case 'test_suite_list' : {
+            console.log('Received request test_suite_list................');
+            res.status(201).send(['test suite1', 'test suite2', 'test suite3']);
+            break;
+        }
+        case 'test_suite_description' : {
+            console.log('Received request test_suite_description................');
+            res.status(201).send('as\ndasd \nas\nd \nas\nd a\nsd\n a\nsd \nasd \n as\nda\nsd\nas\ndas\ndsd\nasdds');
+            break;
+        }
+        default: {
+            res.status(404).end();
+        }
+    }
+};
+
 module.exports = controller;

@@ -14,7 +14,12 @@ router.get('/config', function(req, res, next) {
 
 /* GET test suite configuration page. */
 router.get('/test_suite', function(req, res, next) {
-    res.render('test_suite', { title: 'Test suite', config: req.app.locals.mainConfig });
+    controller.testSuiteRun(req, res);
+});
+
+/* GET test suite configuration page. for post ajax requests from UI*/
+router.post('/test_suite_config', function(req, res, next) {
+    controller.test_suite_config(req, res);
 });
 
 /* POST main configuration page form submit handler. */
