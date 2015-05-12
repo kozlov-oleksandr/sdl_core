@@ -50,8 +50,7 @@ $('#update_list').click(function(){
  * Requests test suite description data from server
  * and update description test suite textarea
  */
-$('#test_suite_add').change(function() {
-    request('test_suite_add', function(res){
-        $('#description').val(res);
-    });
+$('#test_suite_add').click(function() {
+    var add_modal = document.getElementById("overlay");
+    add_modal.style.visibility = (add_modal.style.visibility == "visible") ? "hidden" : "visible";
 });
