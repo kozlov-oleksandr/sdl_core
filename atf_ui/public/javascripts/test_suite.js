@@ -44,3 +44,14 @@ $('#update_list').click(function(){
         }
     });
 });
+
+/**
+ * Test suite list select changes handler
+ * Requests test suite description data from server
+ * and update description test suite textarea
+ */
+$('#test_suite_add').change(function() {
+    request('test_suite_add', function(res){
+        $('#description').val(res);
+    });
+});
