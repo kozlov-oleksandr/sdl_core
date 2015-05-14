@@ -52,5 +52,52 @@ $('#update_list').click(function(){
  */
 $('#test_suite_add').click(function() {
     var add_modal = document.getElementById("overlay");
+    request('test_suite_list', function(res){
+        for (var i = 0; i < res.length; i++) {
+            $('#list_of_tests')
+                .append($("<input/>")
+                    .attr({
+                        type: "checkbox",
+                        value: res[i],
+                        checked: true}))
+                .append(res[i])
+                .append($("<br/>"));
+
+        }
+    });
+
     add_modal.style.visibility = (add_modal.style.visibility == "visible") ? "hidden" : "visible";
+});
+
+function finishAddSuite() {
+    $('#list_of_tests').empty();
+    document.getElementById("folder_name").value = '';
+    document.getElementById("overlay").style.visibility = "hidden";
+}
+
+$('#add_test_suit_btn').click(function() {
+    var test_scripts = [];
+    $("input[type=checkbox]").each(function() {
+        if(this.checked) {
+            test_scripts.push(this.value);
+        }
+    });
+
+    var folder = document.getElementById("folder_name").value;
+
+    $.ajax({
+        type: 'POST',
+        data: JSON.stringify({ "objectData": 'add_test_suit',
+                               "folder_name": folder,
+                               "test_scripts": test_scripts}),
+        contentType: 'application/json',
+        url: 'http://localhost:3000/test_suite_config',
+        success: function(res) {
+            finishAddSuite();
+        }
+    });
+});
+
+$('#cancel_test_suit').click(function() {
+    finishAddSuite();
 });

@@ -1,5 +1,9 @@
 div(id="overlay")
   div
-    p Content
-    add(class='button') Add
-    cancel(class='button') Cancel
+    p Create test suite folder
+
+    input(type="text", name='folder_name', id='folder_name')
+
+    div(id='list_of_tests')
+    input(type='submit', name='add_btn', id="add_test_suit_btn", value='Add')
+    input(type='button', name='cancel_btn', id='cancel_test_suit', value='Cancel')
