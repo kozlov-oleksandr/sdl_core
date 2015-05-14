@@ -23,7 +23,7 @@ block content
 
             textarea(id='description', class='description', rows=7, cols=1, readonly='readonly')
 
-            #test_suite_add(class='button') Add test suite
+            #test_suite_add(type="button", class='btn btn-primary btn-lg', data-toggle="modal", data-target="#overlay") Add test suite
 
 
 
@@ -47,5 +47,8 @@ block content
         div(class='footer-box') terminal CMD:
             p(class='footer_param') #{config.terminal_name}
 
+    link(rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css')
+    script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js")
+    script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js")
     include modals/add_test_suit
     script(src="/javascripts/test_suite.js")

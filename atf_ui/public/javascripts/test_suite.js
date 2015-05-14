@@ -51,7 +51,6 @@ $('#update_list').click(function(){
  * and update description test suite textarea
  */
 $('#test_suite_add').click(function() {
-    var add_modal = document.getElementById("overlay");
     request('test_suite_list', function(res){
         for (var i = 0; i < res.length; i++) {
             $('#list_of_tests')
@@ -65,14 +64,11 @@ $('#test_suite_add').click(function() {
 
         }
     });
-
-    add_modal.style.visibility = (add_modal.style.visibility == "visible") ? "hidden" : "visible";
 });
 
 function finishAddSuite() {
     $('#list_of_tests').empty();
     document.getElementById("folder_name").value = '';
-    document.getElementById("overlay").style.visibility = "hidden";
 }
 
 $('#add_test_suit_btn').click(function() {
