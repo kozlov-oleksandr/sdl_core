@@ -1,0 +1,9 @@
+test.Object1 ctor
+test.Object1 raiseSignal
+test.Object1 raiseStringSignal
+TestObject1::Slot()
+TestObject1::StringSlot( "Test string here" )
+TestSlot
+TestStringSlot 	Test string here
+test.Object1 __gc metamethod
+TestObject::dtor

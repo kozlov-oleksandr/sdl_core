@@ -1,0 +1,51 @@
+Automated Testing Framework 2.0
+
+In parentheses specified feature number from https://adc.luxoft.com/confluence/display/APPLINK/ATF-2.0+Feature+list+and+DoD
+
+26-03-2014 version 2.1.2
+ - Bugfixes
+   - HMI SendError function fixed (APPLINK-11930)
+   - RUN_AFTER behavior fixed (APPLINK-11790)
+ - EXPECT_RESPONSE now accepts method name also as expectation creterion (APPLINK-11927)
+ - Added RAISE_EVENT function to raise custom events (APPLINK-11944)
+   - sample.lua contains the case DelayedExp to demostrate how to use this function
+23-03-2014 version 2.1.1
+ - Bugfixes
+   - Malformed messages during media streaming (3)
+   - Missed session checking returned
+ - Bandwidth parameter added to StartStreaming (3)
+ - EXPECT_ANY_SESSION_NOTIFICATION routine
+ - HMI connection Send() function added to send arbitrary data (10)
+17-03-2014 version 2.1.1-beta
+ - Minor bug fixes
+   - Priority of predefined expectations reduced to 2
+   - locale changed to "C"
+ - Timed actions (RUN_AFTER) (13)
+ - Binary data in RPC requests
+ - File mapping prevents buffer overflow and simplifies media streaming (3)
+ - Test case names must begin with capital letter
+ - Test is not stopped if case failed
+ - File streaming feature added (3)
+ - HMI connection API improved
+ - RegisterAppInterface parameters are moved to MobileSession constructor arguments (6)
+ - Application identifiers stored in Test:applications dictionary indexed by application name (6)
+ - EXPECT_HMINOTIFICATION function added
+03-03-2014 version 2.0.1-beta
+ - Implemented ATF core
+   - Qt event loop
+   - Qt dynamic objects
+   - Timers
+   - Networking
+     - Tcp server
+     - Tcp client
+     - WebSocket client
+ - Applink Protocol Handler
+ - Basic connection tests
+ - HMI initialization
+ - Mobile session creating
+ - Sample Alert test
+ - Test validation criteria:
+   - Timeout
+   - Times
+   - Sequence
+   - Data validation

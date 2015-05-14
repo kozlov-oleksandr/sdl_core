@@ -1,5 +1,6 @@
 var express = require('express');
-var controller = {};
+var controller = {atf_process: null};
+var child_process = require('child_process');
 var fs = require("fs");
 
 var uploadPath = '/tmp/uploads/';
@@ -90,7 +91,6 @@ controller.test_suite_config = function(req, res) {
     var currentTestSuite;
 
     console.log(req.body.objectData, "request received................");
-    console.log(req.body.data, "data received................");
 
     switch (req.body.objectData) {
         case 'test_cases_list' : {
@@ -153,8 +153,25 @@ controller.test_suite_config = function(req, res) {
             res.status(201).send(results);
             break;
         }
+        case 'start_atf' : {
+            console.log('Received request to run ATF for testsuits: ' + req.body.data.test_suits);
+            var test_suits = req.body.data.test_suits;
+            this.atf_process = child_process.fork(__dirname + '/run_atf.js', [test_suits, testSuitePath]);
+            this.atf_process.on('message', function(m) {
+                res.write(m);
+            });
+            this.atf_process.on('close', function(){
+                res.end();
+            });
+            break;
+        }
+        case 'stop_atf' : {
+            this.atf_process.kill('SIGHUP');
+            this.atf_process = null;
+            res.status(201).send();
+            break;
+        }
         case 'add_test_suit' : {
-
             console.log('Received request to add new test suit with scripts: ' + req.body.data.test_scripts);
             path = "/tmp/testsuits/" + req.body.data.folder_name + "/";
             console.log('path ' + path);
@@ -170,7 +187,6 @@ controller.test_suite_config = function(req, res) {
                 require('child_process').spawn('mv', [uploadPath + req.body.data.test_scripts[i], path]);
 
             }
-
             break;
         }
         default: {
