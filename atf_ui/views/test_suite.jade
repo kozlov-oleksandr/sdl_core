@@ -25,13 +25,16 @@ block content
 
             #test_suite_add(class="button") Add test suite
 
-        div(id='list_of_suits', class="container")
+        div(id='run_test_suits' class='container')
+            label(class='label') Select test suits to run
+            div(id='list_of_suits', class="container")
 
-        #start_atf(type="button", class="button") Start ATF
+            div(class="button_container")
+                #start_atf(type="button", class="button") Start ATF
+                #stop_atf(type="button", class="button", disabled="disabled") Stop ATF
 
-        #stop_atf(type="button", class="button", disabled="disabled") Stop ATF
-        br
-        textarea(id='log', class='description', rows=7, cols=1, readonly='readonly')
+            label(class='label') ATF Log
+            textarea(id='log', class='description', rows=7, cols=1, readonly='readonly')
 
     a(class='button', href='http://localhost:3000') Back
 

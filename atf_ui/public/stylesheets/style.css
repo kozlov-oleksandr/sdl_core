@@ -121,3 +121,39 @@ dialog {
 .modal-title {
     margin: 0;
 }
+
+#list_of_suits.container {
+    border: 1px solid #e5e5e5;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    float: top;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+#log {
+    float: top;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.label {
+    float: top;
+    display: block;
+    text-align: left;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.button_container {
+    float: top;
+    display: inline-block;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+#run_test_suits.container {
+    margin-top: 10px;
+    float: left;
+    vertical-align: bottom;
+}
