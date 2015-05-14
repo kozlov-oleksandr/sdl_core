@@ -24,6 +24,8 @@ router.post('/test_suite_config', function(req, res, next) {
 
 /* POST main configuration page form submit handler. */
 router.post('/save', function(req, res, next) {
+
+    console.log("Save Configuration enter1...................");
     controller.saveConfiguration(req, res);
 });
 

@@ -1,5 +1,22 @@
 var express = require('express');
 var controller = {};
+var fs = require("fs");
+
+var uploadPath = '/tmp/uploads/';
+var testSuitePath = '/tmp/testsuits/';
+
+try {
+    fs.mkdirSync(testSuitePath);
+} catch(e) {
+    if ( e.code != 'EEXIST' ) throw e;
+}
+try {
+    fs.mkdirSync(uploadPath);
+} catch(e) {
+    if ( e.code != 'EEXIST' ) throw e;
+}
+
+
 
 /**
  * Method to save configuration data from config.jade view
@@ -9,7 +26,7 @@ var controller = {};
  */
 controller.saveConfiguration = function(req, res) {
 
-    var fs = require("fs");
+    console.log("Save Configuration enter...................");
 
     // SYNC method to write configuration data to FS
     fs.writeFileSync(
@@ -17,6 +34,7 @@ controller.saveConfiguration = function(req, res) {
         JSON.stringify( req.body ),
         "utf8"
     );
+    console.log("File writed to FS...................");
 
     // SYNC method
     var data = fs.readFileSync('/tmp/config.json', 'utf8');
@@ -39,17 +57,6 @@ controller.saveConfiguration = function(req, res) {
     res.redirect("back");
 };
 
-controller.saveConfiguration = function(req) {
-    var fs = require("fs");
-
-    // SYNC method to write configuration data to FS
-    fs.writeFileSync(
-        "/tmp/config.json",
-        JSON.stringify( req.app.locals.mainConfig ),
-        "utf8"
-    );
-}
-
 /**
  * Method to load configuration view test_suite.jade
  *
@@ -66,7 +73,7 @@ controller.testSuiteRun = function(req, res) {
 
 function logAndSendError(response, log_string, error) {
     console.log(log_string + error);
-    response.status(500).end();
+    //response.status(500).end();
 }
 
 /**
@@ -76,60 +83,98 @@ function logAndSendError(response, log_string, error) {
  */
 controller.test_suite_config = function(req, res) {
     var fs = require("fs");
+    var results = [];
+    var path = '';
+    var list;
+    var filePath;
+    var currentTestSuite;
+
+    console.log(req.body.objectData, "request received................");
+    console.log(req.body.data, "data received................");
+
     switch (req.body.objectData) {
+        case 'test_cases_list' : {
+            console.log('Received request test_cases_list................');
+
+            results = [];
+            list = fs.readdirSync(uploadPath);
+            list.forEach(function(file) {
+                filePath = uploadPath + file;
+                var stat = fs.statSync(filePath);
+                if (!(stat && stat.isDirectory())) {
+                    results.push(file);
+                }
+            });
+
+            res.status(201).send(results);
+            break;
+        }
         case 'test_suite_list' : {
-            console.log('Received request test_suite_list................');
-            res.status(201).send(['test suite1', 'test suite2', 'test suite3']);
+            console.log('Received request test_suits_list................');
+
+            results = [];
+            list = fs.readdirSync(testSuitePath);
+            list.forEach(function(file) {
+                filePath = testSuitePath + file;
+                var stat = fs.statSync(filePath);
+                if (stat && stat.isDirectory()) {
+                    results.push(file);
+                }
+            });
+
+            res.status(201).send(results);
             break;
         }
         case 'test_suite_description' : {
             console.log('Received request test_suite_description................');
-            res.status(201).send('as\ndasd \nas\nd \nas\nd a\nsd\n a\nsd \nasd \n as\nda\nsd\nas\ndas\ndsd\nasdds');
+
+            if(req.body.data){
+                currentTestSuite = req.body.data;
+            } else {
+                list = fs.readdirSync(testSuitePath);
+                currentTestSuite = list[0];
+            }
+
+            path = testSuitePath + currentTestSuite;
+            list = fs.readdirSync(path);
+            results = [];
+
+            results.push("Test suite " + req.body.data);
+
+            list.forEach(function(file) {
+                filePath = path + "/" + file;
+                console.log(filePath);
+                var stat = fs.statSync(filePath);
+                if (!(stat && stat.isDirectory())) {
+                    results.push(file);
+                }
+            });
+
+            res.status(201).send(results);
             break;
         }
         case 'add_test_suit' : {
-            console.log('Received request to add new test suit with scripts: ' + req.body.test_scripts);
-            var path = __dirname + "/../testsuits/" + req.body.folder_name + "/";
+
+            console.log('Received request to add new test suit with scripts: ' + req.body.data.test_scripts);
+            path = "/tmp/testsuits/" + req.body.data.folder_name + "/";
             console.log('path ' + path);
-            fs.mkdir(path, function(err) {
+            fs.mkdirSync(path, function(err) {
                     if (err && err.code != 'EEXIST') {
-                        logAndSendError(res, 'Failed to create/read test suit directory ' + req.body.folder_name, err);
-                        return;
-                    } else {
-                        if (!req.app.locals.mainConfig.testsuits) {
-                            req.app.locals.mainConfig.testsuits = [];
-                        }
-                        var test_suit = {};
-                        test_suit[req.body.folder_name] = [];
-                        var files = req.body.test_scripts;
-                        for (var i = 0; i < files.length; ++i) {
-                            var input_stream = fs.createReadStream('/tmp/uploads/' + files[i]);
-                            var error = null;
-                            input_stream.on('error', function (err) {
-                                logAndSendError(res, "Failed to open script file " + files[i] + " with error: " , err);
-                                error = err;
-                                return;
-                            });
-                            var output_stream = fs.createWriteStream(path + files[i]);
-                            output_stream.on('error', function(err) {
-                                logAndSendError(res, "Failed to open destination script file " + files[i] + " with error: ",
-                                                err);
-                                error = err;
-                                return;
-                            });
-                            if (error === null) {
-                                input_stream.pipe(output_stream);
-                                test_suit[req.body.folder_name].push(files[i]);
-                            }
-                        }
-                        req.app.locals.mainConfig.testsuits.push(test_suit);
-                        controller.saveConfiguration(req);
+                        logAndSendError(res, 'Failed to create/read test suit directory ' + req.body.data.folder_name, err);
                         res.status(201).send();
-                    }
-            });
+                        return;
+                    }});
+
+            for(var i = 0; i < req.body.data.test_scripts.length; i++){
+
+                require('child_process').spawn('mv', [uploadPath + req.body.data.test_scripts[i], path]);
+
+            }
+
             break;
         }
         default: {
+            console.log('Undefined route: ' + req.body.objectData);
             res.status(404).end();
         }
     }

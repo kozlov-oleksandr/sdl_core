@@ -26,7 +26,7 @@ fs.readFile('/tmp/config.json', 'utf8', function (err, data) {
         fs.writeFile("file.js", "{}", function(err) {
             console.log("The configuration file was created!");
         });
-
+        return;
     }
     app.locals.mainConfig = JSON.parse(data);
     console.log(app.locals.mainConfig);

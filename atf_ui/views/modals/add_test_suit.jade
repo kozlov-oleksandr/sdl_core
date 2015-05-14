@@ -1,17 +1,15 @@
-div(class="modal fade", id="overlay", tabindex="-1", role="dialog", aria-labelledby="add_suit_label", aria-hidden="true")
+dialog(class="modal fade", id="overlay")
   div(class="modal-dialog")
     div(class="modal-content")
       div(class="modal-header")
-        button(type="button", class="close", data-dismiss="modal", aria-label="Close")
-          span(aria-hidden="true")&times;
-        h4(class="modal-title", id="add_suit_label") Add New Test Suit
+        h4(class="modal-title") Add New Test Suit
       div(class="modal-body")
-        p Create test suite folder
+        p Test suite name
         input(type="text", name='folder_name', id='folder_name')
         br
         br
         div(id='list_of_tests', class="container")
 
       div(class="modal-footer")
-        button(type='button', class="btn btn-primary", data-dismiss="modal", id="add_test_suit_btn") Add
-        button(type='button', class="btn btn-default", data-dismiss="modal", id='cancel_test_suit') Cancel
+        button(type='button', class="button", id="add_test_suit_btn") Add
+        button(type='button', class="button", id='cancel_test_suit') Cancel

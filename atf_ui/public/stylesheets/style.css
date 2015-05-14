@@ -14,6 +14,7 @@ a {
     background: linear-gradient(rgb(246, 246, 246), rgb(221, 221, 221));
     text-decoration: initial;
     display: inline-block;
+    margin: 2px;
 }
 
 #main_configuration_container.main_container,
@@ -60,11 +61,12 @@ a {
     color: #00901D;
 }
 
-.description {
+.description{
     float: left;
     overflow: auto;
-    resize: none;
-    width: 300px;
+    /*resize: none;*/
+    height: 242px;
+    width: 394px;
     margin-top: 10px;
 }
 
@@ -74,11 +76,48 @@ a {
     float: right;
 }
 
-#test_suite_list_area .test_suite_list {
+#test_suite_list_area .test_suite_list{
     width: 339px;
     height: 22px;
 }
 
-#test_suite_list_area .update_list {
+#test_suite_list_area .update_list{
     float: right;
+}
+
+dialog {
+    border: none;
+    background: transparent;
+}
+
+.modal-dialog{
+    width: 600px;
+}
+
+.modal-content{
+    border-radius: 6px;
+    background-color: #fff;
+    border: 1px solid rgba(0,0,0,.2);
+    box-shadow: 0 3px 9px rgba(0,0,0,.5);
+}
+
+.modal-header{
+    height: 15px;
+    padding: 15px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.modal-body {
+    position: relative;
+    padding: 15px;
+}
+
+.modal-footer {
+    padding: 15px;
+    text-align: right;
+    border-top: 1px solid #e5e5e5;
+}
+
+.modal-title {
+    margin: 0;
 }
