@@ -41,6 +41,7 @@ updateTestSuiteDescription = function(value){
 updateTestSuiteList = function(value){
 
     $('#test_suite_list').empty();
+    $('#list_of_suits').empty();
 
     request('test_suite_list', function(res){
 
@@ -88,7 +89,6 @@ $('#start_atf').click(function() {
         }
     });
     request('start_atf', function(res){
-        console.log(res);
         $('#log').val(res);
         $('#stop_atf').removeAttr('disabled');
         $('#start_atf').attr('disabled', 'disabled');

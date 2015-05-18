@@ -15,6 +15,7 @@ a {
     text-decoration: initial;
     display: inline-block;
     margin: 2px;
+    cursor: pointer;
 }
 
 #main_configuration_container.main_container,

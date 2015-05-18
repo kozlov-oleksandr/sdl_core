@@ -156,13 +156,38 @@ controller.test_suite_config = function(req, res) {
         case 'start_atf' : {
             console.log('Received request to run ATF for testsuits: ' + req.body.data.test_suits);
             var test_suits = req.body.data.test_suits;
-            this.atf_process = child_process.fork(__dirname + '/run_atf.js', [test_suits, testSuitePath]);
-            this.atf_process.on('message', function(m) {
-                res.write(m);
+
+            // Silent needed to handle logs from child process
+            this.atf_process = child_process.fork(
+                __dirname + '/run_atf.js',
+                [test_suits, testSuitePath],
+                {silent:true}
+            );
+
+            this.atf_process.stdout.on('data', function (data) {
+                console.log('stdout: ' + data);
+                res.write(data);
             });
-            this.atf_process.on('close', function(){
+
+            this.atf_process.stderr.on('data', function (data) {
+                console.log('stderr: ' + data);
+                res.write(data);
+            });
+
+            this.atf_process.on('exit', function (code) {
+                console.log('child process exited with code ' + code);
+                res.write('child process exited with code ' + code);
                 res.end();
             });
+
+            this.atf_process.on('close', function (code) {
+                console.log('child process closed with code ' + code);
+                res.write('child process closed with code ' + code);
+                res.end();
+            });
+
+
+
             break;
         }
         case 'stop_atf' : {
