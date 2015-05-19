@@ -1,5 +1,5 @@
 var express = require('express');
-var controller = {atf_process: null};
+var controller = {atf_process: null, sdl_process: null};
 var child_process = require('child_process');
 var fs = require("fs");
 
@@ -157,6 +157,15 @@ controller.test_suite_config = function(req, res) {
             console.log('Received request to run ATF for testsuits: ' + req.body.data.test_suits);
             var test_suits = req.body.data.test_suits;
 
+            if (!req.app.locals.mainConfig.file_path) {
+                logAndSendError(res, "Path to SDL is not set");
+                break;
+            }
+            console.log(req.app.locals.mainConfig);
+            if (!this.sdl_process) {
+                this.sdl_process = child_process.spawn(req.app.locals.mainConfig.file_path);
+            }
+
             // Silent needed to handle logs from child process
             this.atf_process = child_process.fork(
                 __dirname + '/run_atf.js',
@@ -186,12 +195,14 @@ controller.test_suite_config = function(req, res) {
                 res.end();
             });
 
-
-
             break;
         }
         case 'stop_atf' : {
             this.atf_process.kill('SIGHUP');
+            if (this.sdl_process) {
+                this.sdl_process.kill("SIGHUP");
+                this.sdl_process = null;
+            }
             this.atf_process = null;
             res.status(201).send();
             break;
