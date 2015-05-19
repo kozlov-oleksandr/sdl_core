@@ -1,0 +1,26 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/bin/node', '/usr/bin/npm', 'cache', 'clean', '-f' ]
+2 info using npm@1.4.28
+3 info using node@v0.10.37
+4 verbose node symlink /usr/bin/node
+5 warn using --force I sure hope you know what you are doing.
+6 error Error: May not delete: /home/amelnik/.npm/bin
+6 error     at gentlyRm (/usr/lib/node_modules/npm/lib/utils/gently-rm.js:25:15)
+6 error     at /usr/lib/node_modules/npm/node_modules/slide/lib/async-map.js:52:35
+6 error     at Array.forEach (native)
+6 error     at /usr/lib/node_modules/npm/node_modules/slide/lib/async-map.js:52:11
+6 error     at Array.forEach (native)
+6 error     at asyncMap (/usr/lib/node_modules/npm/node_modules/slide/lib/async-map.js:51:8)
+6 error     at /usr/lib/node_modules/npm/lib/cache.js:183:7
+6 error     at ReaddirReq.Req.done (/usr/lib/node_modules/npm/node_modules/graceful-fs/graceful-fs.js:141:5)
+6 error     at ReaddirReq.done (/usr/lib/node_modules/npm/node_modules/graceful-fs/graceful-fs.js:88:22)
+6 error     at Object.oncomplete (evalmachine.<anonymous>:108:15)
+7 error If you need help, you may report this *entire* log,
+7 error including the npm and node versions, at:
+7 error     <http://github.com/npm/npm/issues>
+8 error System Linux 3.13.0-52-generic
+9 error command "/usr/bin/node" "/usr/bin/npm" "cache" "clean" "-f"
+10 error cwd /home/amelnik/rep/sdl_core
+11 error node -v v0.10.37
+12 error npm -v 1.4.28
+13 verbose exit [ 1, true ]

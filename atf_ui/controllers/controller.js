@@ -163,14 +163,35 @@ controller.test_suite_config = function(req, res) {
             }
             console.log(req.app.locals.mainConfig);
             if (!this.sdl_process) {
-                this.sdl_process = child_process.spawn(req.app.locals.mainConfig.file_path);
+                console.log("Start SDL.............");
+
+                var proc = child_process.exec;
+
+                this.sdl_process = proc(req.app.locals.mainConfig.file_path, {cwd:'/home/amelnik/rep/sdl-build/bin/'});
+
+                this.sdl_process.stdout.on('data', function (data) {
+                    console.log('SDL stdout: ' + data);
+                    res.write(data);
+                });
+
+                this.sdl_process.stderr.on('data', function (data) {
+                    console.error('SDL stderr: ' + data);
+                    res.write(data);
+                });
+
+                this.sdl_process.on('exit', function (code) {
+                    console.log('SDL child process exited with code: ' + code);
+                    //res.end();
+                });
             }
 
             // Silent needed to handle logs from child process
             this.atf_process = child_process.fork(
                 __dirname + '/run_atf.js',
                 [test_suits, testSuitePath],
-                {silent:true}
+                {
+                    silent:true
+                }
             );
 
             this.atf_process.stdout.on('data', function (data) {
@@ -185,13 +206,13 @@ controller.test_suite_config = function(req, res) {
 
             this.atf_process.on('exit', function (code) {
                 console.log('child process exited with code ' + code);
-                res.write('child process exited with code ' + code);
+                //res.write('child process exited with code ' + code);
                 res.end();
             });
 
             this.atf_process.on('close', function (code) {
                 console.log('child process closed with code ' + code);
-                res.write('child process closed with code ' + code);
+                //res.write('child process closed with code ' + code);
                 res.end();
             });
 

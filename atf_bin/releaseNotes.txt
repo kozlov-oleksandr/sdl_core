@@ -2,6 +2,16 @@ Automated Testing Framework 2.0
 
 In parentheses specified feature number from https://adc.luxoft.com/confluence/display/APPLINK/ATF-2.0+Feature+list+and+DoD
 
+27-04-2014 version 2.1.3-r1
+  - APPLINK-12841: Payload encoding moved to MobileSession class
+
+21-04-2014 version 2.1.3
+ - Modules search order changed (local first)
+ - ATF exits on SIGABRT (e.g. in result of assert() fail)
+ - Added Close() method for WebSocket connection
+ - Bugfixes
+   - ATF reports an error on stop streaming if there is no streaming
+
 26-03-2014 version 2.1.2
  - Bugfixes
    - HMI SendError function fixed (APPLINK-11930)

@@ -26,13 +26,33 @@ function Test:DelayedExp()
             end, 2000)
 end
 
+function Test:Case_GetVehicleDataTest()
+  local CorIdSubscribeVD= self.mobileSession:SendRPC("GetVehicleData",
+  {
+    gps = true,
+    speed = true
+  })
+
+  EXPECT_HMICALL("VehicleInfo.GetVehicleData", 
+  {
+    gps = true,
+    speed = true
+  })
+  :Do(function(_,data)
+        self.hmiConnection:SendResponse(data.id, "VehicleInfo.GetVehicleData", "SUCCESS",{gps = {longitudeDegrees = 20.1, latitudeDegrees = -11.9, dimension = "2D"}, speed = 120.10})
+      end)
+
+  self.mobileSession:ExpectResponse(CorIdSubscribeVD, { success = true, resultCode = "SUCCESS",gps = {longitudeDegrees = 20.1, latitudeDegrees = -11.9, dimension = "2D"}, speed = 120.1})
+  :Timeout(5000)
+end
+
 function Test:GetVehicleData()
   EXPECT_HMICALL("VehicleInfo.GetVehicleData")
     :Do(function(_, data)
           self.hmiConnection:SendResponse(data.id, data.method, "SUCCESS", { method = "VehicleInfo.GetVehicleData", speed = 1.2 })
         end)
   local cid = self.mobileSession:SendRPC("GetVehicleData", { speed = true })
-  EXPECT_RESPONSE("GetVehicleData", { success = true })
+  EXPECT_RESPONSE("GetVehicleData", { success = true, speed = 1.2 })
 end
 
 function Test:PutFile()
@@ -44,8 +64,10 @@ function Test:PutFile()
   EXPECT_RESPONSE(cid, { success = true })
 end
 
+--[[ Disabled until APPLINK-12709 is fixed
+
 function Test:Case_StartAudioStreaming()
- self.mobileSession:StartService(10)
+  self.mobileSession:StartService(10)
    :Do(function()
          self.mobileSession:StartStreaming(10, "video.mpg", 30 * 1024)
        end)
@@ -79,6 +101,7 @@ function Test:StopAudioStreaming()
              end)
 
 end
+]]
 
 function Test:Case_PerformAudioPassThruTest()
  local CorIdPAPT = self.mobileSession:SendRPC("PerformAudioPassThru",
