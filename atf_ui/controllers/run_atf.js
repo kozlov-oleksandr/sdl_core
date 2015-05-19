@@ -3,7 +3,8 @@ var child_process = require('child_process');
 
 function RunATF(test_suits, test_suite_path) {
     var path = require('path');
-    var atf_bin = path.resolve(__dirname + "/../../atf_bin/run");
+    var atf_bin_folder = path.resolve(__dirname + "/../../atf_bin");
+    var atf_bin = atf_bin_folder + "/run";
     var test_suit_list = test_suits.split(',');
 
     for(var i = 0; i < test_suit_list.length; ++i) {
@@ -24,8 +25,10 @@ function RunATF(test_suits, test_suite_path) {
 
 
             try {
-                var history = child_process.execSync('/home/amelnik/rep/sdl_core/atf_bin/run /tmp/testsuits/sa/sample.lua', {cwd: '/home/amelnik/rep/sdl_core/atf_bin/'});
+                var history = child_process.execSync(atf_bin + " " + test_suite_path + test_suit + "/" + file,
+                    {'cwd': atf_bin_folder});
                 console.log('HISTORY! ' + history);
+                process.send('' + history);
             } catch (err) {
                 console.log('Error --------- ' + err);
             }

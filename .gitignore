@@ -1,2 +1,4 @@
 build/
 .idea/
+atf_bin/mobile.out
+atf_ui/npm-debug.log

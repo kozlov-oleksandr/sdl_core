@@ -102,6 +102,13 @@ $('#stop_atf').click(function() {
     request('stop_atf', function(res){
         $('#stop_atf').attr('disabled', 'disabled');
         $('#start_atf').removeAttr('disabled');
+        $('#clean_sdl').removeAttr('disabled');
+    });
+});
+
+$('#clean_sdl').click(function() {
+    request('stop_sdl', function(res) {
+        $('#clean_sdl').attr('disabled', 'disabled');
     });
 });
 

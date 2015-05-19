@@ -167,9 +167,10 @@ controller.test_suite_config = function(req, res) {
 
                 var proc = child_process.exec;
 
-                this.sdl_process = proc(req.app.locals.mainConfig.file_path, {cwd:'/home/amelnik/rep/sdl-build/bin/'});
+                this.sdl_process = proc(req.app.locals.mainConfig.file_path,
+                    {'cwd': require('path').dirname(req.app.locals.mainConfig.file_path)});
 
-                this.sdl_process.stdout.on('data', function (data) {
+                /*this.sdl_process.stdout.on('data', function (data) {
                     console.log('SDL stdout: ' + data);
                     res.write(data);
                 });
@@ -182,7 +183,7 @@ controller.test_suite_config = function(req, res) {
                 this.sdl_process.on('exit', function (code) {
                     console.log('SDL child process exited with code: ' + code);
                     //res.end();
-                });
+                });*/
             }
 
             // Silent needed to handle logs from child process
@@ -193,6 +194,10 @@ controller.test_suite_config = function(req, res) {
                     silent:true
                 }
             );
+
+            this.atf_process.on('message', function(m) {
+                res.write(m);
+            });
 
             this.atf_process.stdout.on('data', function (data) {
                 console.log('stdout: ' + data);
@@ -220,12 +225,15 @@ controller.test_suite_config = function(req, res) {
         }
         case 'stop_atf' : {
             this.atf_process.kill('SIGHUP');
-            if (this.sdl_process) {
-                this.sdl_process.kill("SIGHUP");
-                this.sdl_process = null;
-            }
             this.atf_process = null;
             res.status(201).send();
+            break;
+        }
+        case 'stop_sdl' : {
+            if (this.sdl_process) {
+                this.sdl_process.kill();
+                this.sdl_process = null;
+            }
             break;
         }
         case 'add_test_suit' : {
