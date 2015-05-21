@@ -55,6 +55,17 @@ controller.saveConfiguration = function(req, res) {
         console.log("Index rendered...................");
     }
 
+    fs.readFile(__dirname + "/../../atf_bin" + "/modules/config.lua", 'utf8',
+        function(err, data) {
+            if (err) {
+                console.log("Failed to read ATF config file. " + err);
+                return;
+            }
+            var updatedData = data.replace(/config\.SDLStoragePath.*/,
+                "\"config.SDLStoragePath = " + req.app.locals.mainConfig.SDLStoragePath+"\"");
+            fs.writeFileSync(__dirname + "/../../atf_bin" + "/modules/config.lua", updatedData, 'utf8');
+    });
+
     res.redirect("back");
 };
 

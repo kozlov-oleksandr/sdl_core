@@ -23,7 +23,18 @@ fs.readFile('/tmp/config.json', 'utf8', function (err, data) {
         console.log("No predefined configuration found...");
         app.locals.mainConfig = null;
 
-        fs.writeFile("file.js", "{}", function(err) {
+        data = {file_path: '',
+                hb_timeout: '',
+                testRecord_path: '',
+                MOB_connection_str: '',
+                HMI_connection_str: '',
+                PerfLog_connection_str: '',
+                launch_time: '',
+                terminal_name: '',
+                SDLStoragePath: ''
+        };
+        app.locals.mainConfig = data;
+        fs.writeFile("/tmp/config.json", JSON.stringify(data), function(err) {
             console.log("The configuration file was created!");
         });
         return;
