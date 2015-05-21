@@ -1,7 +1,15 @@
 var express = require('express');
-var controller = {atf_process: null, sdl_process: null};
 var child_process = require('child_process');
 var fs = require("fs");
+
+var controller = {
+    atf_process: null,
+    sdl_process: null,
+    atf_path: __dirname + "/../../atf_bin/",
+    log_error: "ERROR: ",
+    log_warn: "WARNING: ",
+    log_debug: "DEBUG: "
+};
 
 var uploadPath = '/tmp/uploads/';
 var testSuitePath = '/tmp/testsuits/';
@@ -16,8 +24,30 @@ try {
 } catch(e) {
     if ( e.code != 'EEXIST' ) throw e;
 }
+try {
+    fs.mkdirSync(controller.atf_path + "files/");
+} catch(e) {
+    if ( e.code != 'EEXIST' ) throw e;
+}
 
-
+controller.copyAdditionalFiles = function() {
+    fs.readdir(uploadPath, function(err, files) {
+        if(err) {
+            console.log(controller.log_error +
+                        "failed to read uploaded files directory. " + err);
+            return;
+        }
+        console.log(files);
+        files = files.filter(function(file) {
+            return !(file === '.' || file === '..'
+                    || require("path").extname(file) === '.lua');
+        });
+        console.log(files);
+        files.forEach(function(file) {
+            require('child_process').spawn('mv', [uploadPath + file, controller.atf_path + "files/"]);
+        });
+    });
+}
 
 /**
  * Method to save configuration data from config.jade view
@@ -61,8 +91,14 @@ controller.saveConfiguration = function(req, res) {
                 console.log("Failed to read ATF config file. " + err);
                 return;
             }
-            var updatedData = data.replace(/config\.SDLStoragePath.*/,
-                "\"config.SDLStoragePath = " + req.app.locals.mainConfig.SDLStoragePath+"\"");
+            var updatedData = '';
+            if (-1 === data.indexOf('SDLStoragePath')) {
+                updatedData = data.replace(/local config = \{ \}/,
+                    "local config = { }\nconfig.SDLStoragePath = \"" + req.app.locals.mainConfig.SDLStoragePath+"\"");
+            } else {
+                updatedData = data.replace(/config\.SDLStoragePath.*/,
+                    "config.SDLStoragePath = \"" + req.app.locals.mainConfig.SDLStoragePath+"\"");
+            }
             fs.writeFileSync(__dirname + "/../../atf_bin" + "/modules/config.lua", updatedData, 'utf8');
     });
 
@@ -112,7 +148,7 @@ controller.test_suite_config = function(req, res) {
             list.forEach(function(file) {
                 filePath = uploadPath + file;
                 var stat = fs.statSync(filePath);
-                if (!(stat && stat.isDirectory())) {
+                if (!(stat && stat.isDirectory()) && require('path').extname(file) === '.lua') {
                     results.push(file);
                 }
             });
@@ -166,6 +202,8 @@ controller.test_suite_config = function(req, res) {
         }
         case 'start_atf' : {
             console.log('Received request to run ATF for testsuits: ' + req.body.data.test_suits);
+            this.copyAdditionalFiles();
+
             var test_suits = req.body.data.test_suits;
 
             if (!req.app.locals.mainConfig.file_path) {

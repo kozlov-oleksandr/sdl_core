@@ -12,8 +12,9 @@ block content
         p Upload test cases
         form(action="/upload", method="post", enctype="multipart/form-data")
             input(type="file", name="file_upload", multiple)
+            p Additional test-data upload (icons, etc)
+            input(type="file", name="icon_file_upload", multiple)
             input(type='submit', name="upload", value="upload")
-
 
         #test_suite_list_area(class='container')
             p Test suite list
