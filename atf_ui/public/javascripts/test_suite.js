@@ -10,7 +10,6 @@ var dialog = document.getElementById('overlay');
  * @param callback
  */
 request = function(req, callback, data) {
-
     $.ajax({
         type: 'POST',
         data: JSON.stringify({
@@ -24,7 +23,6 @@ request = function(req, callback, data) {
 };
 
 updateTestSuiteDescription = function(value){
-    console.log(value);
     request('test_suite_description', function(res){
 
             var result = res[0] + '\n';
@@ -61,6 +59,10 @@ updateTestSuiteList = function(value){
         }
     });
 };
+
+$( document ).ready(function() {
+    updateTestSuiteList();
+});
 
 /**
  * Test suite list select changes handler
@@ -121,8 +123,6 @@ $('#test_suite_add').click(function() {
     dialog.showModal();
 
     request('test_cases_list', function(res){
-        console.log(res);
-
         for (var i = 0; i < res.length; i++) {
             $('#list_of_tests')
                 .append($("<input/>")
@@ -136,29 +136,41 @@ $('#test_suite_add').click(function() {
     });
 });
 
-function finishAddSuite() {
+function finishAddSuite(success) {
     $('#list_of_tests').empty();
+    var new_test_suit = document.getElementById("test_suit_name").value;
     document.getElementById("test_suit_name").value = '';
     dialog.close();
+    if (success) {
+        $('#test_suite_list')
+                .append($("<option></option>")
+                    .attr("value", new_test_suit)
+                    .text(new_test_suit));
+            $('#list_of_suits')
+                .append($("<input/>")
+                    .attr({
+                        type: "checkbox",
+                        value: new_test_suit,
+                        checked: true}))
+                .append(new_test_suit)
+                .append($("<br/>"));
+    }
 }
 
 $('#add_test_suit_btn').click(function() {
 
     var test_scripts = [];
-    $("input[type=checkbox]").each(function() {
+    $('#list_of_tests').children("input").each(function() {
         if(this.checked) {
             test_scripts.push(this.value);
-            console.log(this.value);
         }
     });
 
     var folder = document.getElementById("test_suit_name").value;
 
-    console.log('Trying to send request add_test_suit');
-
     request(
         'add_test_suit',
-        finishAddSuite(),
+        finishAddSuite(true),
         {
             "folder_name": folder,
             "test_scripts": test_scripts
@@ -168,5 +180,5 @@ $('#add_test_suit_btn').click(function() {
 });
 
 $('#cancel_test_suit').click(function() {
-    finishAddSuite();
+    finishAddSuite(false);
 });

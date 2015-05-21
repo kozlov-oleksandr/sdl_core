@@ -29,7 +29,59 @@ a {
 }
 
 #test_suite_configuration_container.main_container {
-    height: 500px;
+    height: 550px;
+    position:relative;
+}
+
+.functional_block {
+    border: 1px dotted #A4B7BE;
+    width: 45%;
+    padding-left: 2px;
+    display: inline-block;
+}
+
+.functional_block #test_suite_add {
+    display: block;
+    margin-top: 5px;
+    margin-left: 0px;
+    width: 90px;
+}
+
+.delimiter {
+    border-top: 1px;
+    border-top-style: dotted;
+    border-top-color: #A4B7BE;
+    margin-top: 5px;
+    margin-left: 2px;
+    margin-right: 2px;
+}
+
+.functional_block.right {
+    float: right;
+}
+
+.functional_block.bottom {
+    position:absolute;
+    bottom:10px;
+}
+
+.functional_block.left {
+    left: 10px;
+}
+
+#test_suite_list_area.container{
+    height: 200px;
+    width: 400px;
+    display: inline;
+}
+
+#test_suite_list_area .test_suite_list{
+    width: 339px;
+    height: 22px;
+}
+
+#test_suite_list_area .update_list{
+    float: right;
 }
 
 #main_configuration_container.main_container {
@@ -69,21 +121,6 @@ a {
     height: 242px;
     width: 394px;
     margin-top: 10px;
-}
-
-#test_suite_list_area.container{
-    height: 200px;
-    width: 400px;
-    float: right;
-}
-
-#test_suite_list_area .test_suite_list{
-    width: 339px;
-    height: 22px;
-}
-
-#test_suite_list_area .update_list{
-    float: right;
 }
 
 dialog {
