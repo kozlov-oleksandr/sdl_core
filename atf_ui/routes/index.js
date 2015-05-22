@@ -4,7 +4,7 @@ var controller = require('../controllers/controller.js');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    res.render('index', { title: 'Express' });
+    res.render('index', { title: 'ATF' });
 });
 
 /* GET main configuration page. */
@@ -25,8 +25,15 @@ router.post('/test_suite_config', function(req, res, next) {
 /* POST main configuration page form submit handler. */
 router.post('/save', function(req, res, next) {
 
-    console.log("Save Configuration enter1...................");
+    console.log("Save Configuration enter...................");
     controller.saveConfiguration(req, res);
+});
+
+/* POST main configuration page form submit handler. */
+router.post('/login', function(req, res, next) {
+
+    console.log("Login POST enter...................");
+    controller.newUser(req, res);
 });
 
 /* POST main configuration page form submit handler. */

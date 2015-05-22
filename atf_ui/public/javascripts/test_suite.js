@@ -91,9 +91,63 @@ $('#start_atf').click(function() {
         }
     });
     request('start_atf', function(res){
-        $('#log').val(res);
         $('#stop_atf').removeAttr('disabled');
         $('#start_atf').attr('disabled', 'disabled');
+
+            var socketSDL = new WebSocket("ws://localhost:8081");
+
+            var socketATF = new WebSocket("ws://localhost:8082");
+
+
+            socketSDL.onopen = function() {
+                $("#sdl_log").append("Connection established.");
+                $('#sdl_log').scrollTop($('#sdl_log')[0].scrollHeight - $('#sdl_log').height());
+            };
+
+            socketSDL.onclose = function(event) {
+                if (event.wasClean) {
+                    $("#sdl_log").append('Connection closed clean.');
+                } else {
+                    $("#sdl_log").append('Connection abort.'); // например, "убит" процесс сервера
+                }
+                $("#sdl_log").append('Code: ' + event.code + ' reason: ' + event.reason);
+                $('#sdl_log').scrollTop($('#sdl_log')[0].scrollHeight - $('#sdl_log').height());
+            };
+
+            socketSDL.onmessage = function(event) {
+                $("#sdl_log").append(event.data);
+                $('#sdl_log').scrollTop($('#sdl_log')[0].scrollHeight - $('#sdl_log').height());
+            };
+
+            socketSDL.onerror = function(error) {
+                $("#sdl_log").append("Error " + error.message);
+                $('#sdl_log').scrollTop($('#sdl_log')[0].scrollHeight - $('#sdl_log').height());
+            };
+
+            socketATF.onopen = function() {
+                $("#atf_log").append("Connection established.");
+                $('#atf_log').scrollTop($('#atf_log')[0].scrollHeight - $('#atf_log').height());
+            };
+
+            socketATF.onclose = function(event) {
+                if (event.wasClean) {
+                    $("#atf_log").append('Connection closed clean.');
+                } else {
+                    $("#atf_log").append('Connection abort.'); // например, "убит" процесс сервера
+                }
+                $("#atf_log").append('Code: ' + event.code + ' reason: ' + event.reason);
+                $('#atf_log').scrollTop($('#atf_log')[0].scrollHeight - $('#atf_log').height());
+            };
+
+            socketATF.onmessage = function(event) {
+                $("#atf_log").append(event.data);
+                $('#atf_log').scrollTop($('#atf_log')[0].scrollHeight - $('#atf_log').height());
+            };
+
+            socketATF.onerror = function(error) {
+                $("#atf_log").append("Error " + error.message);
+                $('#atf_log').scrollTop($('#atf_log')[0].scrollHeight - $('#atf_log').height());
+            };
     },
     {
         "test_suits": test_suits

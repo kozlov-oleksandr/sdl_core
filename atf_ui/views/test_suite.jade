@@ -2,9 +2,6 @@ extends layout
 
 block content
 
-    //script(type='text/javascript'). //Apparently Jade requires a dot after the first closing parenthesis.
-    //    var local_data = !{JSON.stringify(suiteList)}
-
     h1= title
     p Welcome to #{title}
 
@@ -41,6 +38,11 @@ block content
 
                 textarea(id='description', class='description', rows=7, cols=1, readonly='readonly')
 
+        label(class='label') ATF Log
+        textarea(id='atf_log', class='ATF_log', rows=7, cols=1, readonly='readonly')
+
+        label(class='label') SDL Log
+        textarea(id='sdl_log', class='SDL_log', rows=7, cols=1, readonly='readonly')
 
 
     a(class='button', href='http://localhost:3000') Back
@@ -58,6 +60,8 @@ block content
             p(class='footer_param') #{config.HMI_connection_str}
         div(class='footer-box') PerfLog connection string:
             p(class='footer_param') #{config.PerfLog_connection_str}
+        div(class='footer-box') Client PerfLog connection string:
+            p(class='footer_param') #{config.client_PerfLog_connection_str}
         div(class='footer-box') Time for launch SDLProc:
             p(class='footer_param') #{config.launch_time}
         div(class='footer-box') terminal CMD:

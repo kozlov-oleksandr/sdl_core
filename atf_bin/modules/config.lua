@@ -1,4 +1,5 @@
 local config = { }
+config.SDLStoragePath = "undefined"
 
 config.hmiUrl = "ws://localhost"
 config.hmiPort = 8087

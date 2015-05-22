@@ -3,6 +3,7 @@ var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
+var expressSession = require('express-session');
 var bodyParser = require('body-parser');
 var multer  = require('multer');
 
@@ -20,23 +21,29 @@ var app = express();
  */
 fs.readFile('/tmp/config.json', 'utf8', function (err, data) {
     if (err) {
-        console.log("No predefined configuration found...");
+        console.log("No predefined configuration found...................");
         app.locals.mainConfig = null;
 
-        data = {file_path: '',
-                hb_timeout: '',
-                testRecord_path: '',
-                MOB_connection_str: '',
-                HMI_connection_str: '',
-                PerfLog_connection_str: '',
-                launch_time: '',
-                terminal_name: '',
-                SDLStoragePath: ''
-        };
-        app.locals.mainConfig = data;
-        fs.writeFile("/tmp/config.json", JSON.stringify(data), function(err) {
-            console.log("The configuration file was created!");
-        });
+
+        //data = {file_path: '',
+        //        hb_timeout: '',
+        //        testRecord_path: '',
+        //        MOB_connection_str: '',
+        //        HMI_connection_str: '',
+        //        PerfLog_connection_str: '',
+        //        launch_time: '',
+        //        terminal_name: '',
+        //        SDLStoragePath: ''
+        //};
+
+        if (fs.writeFileSync("/tmp/config.json", JSON.stringify(app.locals.mainConfig), "utf8")) {
+            console.log("ERROR: The configuration file was not created!..................");
+            console.log(app.locals.mainConfig);
+        } else {
+            console.log("The configuration file was created successfuly!..................");
+            console.log(app.locals.mainConfig);
+        }
+
         return;
     }
     app.locals.mainConfig = JSON.parse(data);
@@ -54,6 +61,7 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(expressSession({secret:'somesecrettokenhere'}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(multer({
     dest: '/tmp/uploads/',
@@ -97,5 +105,6 @@ app.use(function(err, req, res, next) {
   });
 });
 
+controller.init();
 
 module.exports = app;
