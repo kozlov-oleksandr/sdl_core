@@ -11,6 +11,10 @@ a {
     display: none !important;
 }
 
+input {
+    margin: 10px;
+}
+
 .button {
     border-radius: 2px;
     border: 1px solid rgba(163, 163, 163, 0.99);
@@ -18,7 +22,7 @@ a {
     background: linear-gradient(rgb(246, 246, 246), rgb(221, 221, 221));
     text-decoration: initial;
     display: inline-block;
-    margin: 2px;
+    margin: 5px;
     cursor: pointer;
 }
 
@@ -26,30 +30,27 @@ a {
 #test_suite_configuration_container.main_container {
     border: 2px solid#A4B7BE;
     border-radius: 4px;
-    padding: 10px;
     max-width: 1400px;
     margin: 0 auto;
     min-width: 700px;
 }
 
 #test_suite_configuration_container.main_container {
-<<<<<<< HEAD
-    height: 550px;
     position:relative;
+    height: 1000px;
+    box-shadow: 0 0 30px rgba(0,0,0,0.5);
 }
 
 .functional_block {
-    border: 1px dotted #A4B7BE;
-    width: 45%;
-    padding-left: 2px;
+    background-color: rgba(202, 235, 252, 0.48);
+    height: 45%;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+    width: 50%;
     display: inline-block;
 }
 
-.functional_block #test_suite_add {
-    display: block;
-    margin-top: 5px;
-    margin-left: 0px;
-    width: 90px;
+#test_suite_add {
+    margin: 10px;
 }
 
 .delimiter {
@@ -61,17 +62,36 @@ a {
     margin-right: 2px;
 }
 
+.innerContainer {
+    padding: 10px;
+}
+
 .functional_block.right {
     float: right;
+    background-color: rgba(202, 235, 252, 0.48);
+}
+
+.header {
+    background-color: rgba(202, 235, 252, 0.48);
+    padding: 30px;
+    margin: 0px;
+}
+
+.uploadForm {
+    padding-bottom: 20px;
 }
 
 .functional_block.bottom {
     position:absolute;
-    bottom:10px;
+    top: 450px;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+    background-color: rgba(230, 245, 254, 0.99);
 }
 
 .functional_block.left {
-    left: 10px;
+    left: 0px;
+    width: 100%;
+    height: 55%;
 }
 
 #test_suite_list_area.container{
@@ -83,11 +103,6 @@ a {
 #test_suite_list_area .test_suite_list{
     width: 339px;
     height: 22px;
-}
-
-#test_suite_list_area .update_list{
-    float: right;
-    min-height: 700px;
 }
 
 #main_configuration_container.main_container {
@@ -111,7 +126,7 @@ a {
     margin: 2px;
     border-radius: 2px;
     padding: 2px;
-    background-color: rgba(127, 206, 247, 1);
+    background-color: rgba(230, 245, 254, 0.99);
 }
 
 .footer_param{
@@ -132,15 +147,20 @@ a {
 
 .SDL_log,
 .ATF_log {
-    width: 912px;
+
+    width: 100%;
     margin: 0px;
     height: 198px;
+    border: none;
+    padding: 0px;
+    box-shadow: inset 0 0 5px rgba(127, 206, 247, 1);
+    resize: none;
+    background-color: rgba(245, 252, 255, 1);
 }
 
 #test_suite_list_area.container{
     height: 200px;
     width: 400px;
-    float: right;
 }
 
 #test_suite_list_area .test_suite_list{
@@ -208,8 +228,7 @@ dialog {
     float: top;
     display: block;
     text-align: left;
-    margin-top: 5px;
-    margin-bottom: 5px;
+    margin: 5px;
 }
 
 .button_container {
@@ -223,4 +242,8 @@ dialog {
     margin-top: 10px;
     float: left;
     vertical-align: bottom;
+}
+.functional_block.right {
+    overflow-y: scroll;
+    overflow-x: hidden;
 }

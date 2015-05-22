@@ -7,17 +7,18 @@ block content
 
     #test_suite_configuration_container(class='main_container')
         div(class="functional_block")
-            p Upload test cases
-            form(action="/upload", method="post", enctype="multipart/form-data")
-                input(type="file", name="file_upload", multiple)
-                p Additional test-data upload (icons, etc)
-                input(type="file", name="icon_file_upload", multiple)
-                input(type='submit', name="upload", value="upload")
-            div(class="delimiter")
+            div(class="innerContainer")
+                p(class="header") Upload test cases
+                form(action="/upload", method="post", enctype="multipart/form-data", class="uploadForm")
+                    input(type="file", name="file_upload", multiple)
+                    p Additional test-data upload (icons, etc)
+                    input(type="file", name="icon_file_upload", multiple)
+                    input(type='submit', name="upload", value="upload")
+
                 #test_suite_add(class="button") Add test suite
 
         div(class="functional_block right")
-            div(id='run_test_suits' class='container')
+            div(class="innerContainer")
                 label(class='label') Select test suits to run
                 div(id='list_of_suits', class="container")
 
@@ -26,24 +27,22 @@ block content
                     #stop_atf(type="button", class="button", disabled="disabled") Stop ATF
                     #clean_sdl(type="button", class="button", disabled="disabled") Stop SDL
 
-                label(class='label') ATF Log
-                textarea(id='log', class='description', rows=7, cols=1, readonly='readonly')
+                #test_suite_list_area(class='container')
+                    p Test suite list
+                    select(id='test_suite_list', class='test_suite_list')
+
+                    #update_list(class='button update_list') Update
+
+                    textarea(id='description', class='description', rows=7, cols=1, readonly='readonly')
 
         div(class="functional_block left bottom ")
-            #test_suite_list_area(class='container')
-                p Test suite list
-                select(id='test_suite_list', class='test_suite_list')
-
-                #update_list(class='button update_list') Update
-
-                textarea(id='description', class='description', rows=7, cols=1, readonly='readonly')
+            div(class="innerContainer")
 
         label(class='label') ATF Log
         textarea(id='atf_log', class='ATF_log', rows=7, cols=1, readonly='readonly')
 
         label(class='label') SDL Log
         textarea(id='sdl_log', class='SDL_log', rows=7, cols=1, readonly='readonly')
-
 
     a(class='button', href='http://localhost:3000') Back
 
