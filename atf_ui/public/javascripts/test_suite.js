@@ -236,3 +236,14 @@ $('#add_test_suit_btn').click(function() {
 $('#cancel_test_suit').click(function() {
     finishAddSuite(false);
 });
+
+$("#colorScheme").spectrum({
+    showAlpha: true
+});
+
+$('.sp-choose').click(function(){
+    var styles = {
+        backgroundColor : $("#colorScheme").spectrum("get").toRgbString()
+    };
+    $( '#test_suite_configuration_container' ).css( styles );
+});

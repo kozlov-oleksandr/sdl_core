@@ -1,6 +1,8 @@
 extends layout
 
 block content
+    script(src="/javascripts/spectrum.js")
+    link(rel='stylesheet', href='stylesheets/spectrum.css', type='text/css' )
 
     h1= title
     p Welcome to #{title}
@@ -45,6 +47,7 @@ block content
         textarea(id='sdl_log', class='SDL_log', rows=7, cols=1, readonly='readonly')
 
     a(class='button', href='http://localhost:3000') Back
+    div(id='colorScheme', class='button') Change Color
 
     #footer
         div(class='footer-box') SDL file name:
