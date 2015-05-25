@@ -2,6 +2,7 @@ var express = require('express');
 var child_process = require('child_process');
 var fs = require("fs");
 var WebSocketServer = require('ws');
+var psTree = require('ps-tree');
 
 var controller = {
     atf_process: null,
@@ -223,6 +224,23 @@ function logAndSendError(response, log_string, error) {
     //response.status(500).end();
 }
 
+function killTreeProcesses (pid, signal, callback) {
+    signal   = signal || 'SIGHUP';
+    callback = callback || function () {};
+    psTree(pid, function (err, children) {
+        [pid].concat(
+            children.map(function (p) {
+                return p.PID;
+            })
+        ).forEach(function (tpid) {
+            try { process.kill(tpid, signal) }
+            catch (ex) { }
+        });
+        callback();
+    });
+};
+
+
 /**
  * UI AJAX post requests handler
  * @param req
@@ -359,6 +377,7 @@ controller.test_suite_config = function(req, res) {
 
             this.atf_process.on('close', function (code) {
                 controller.clients[0].atf.send('child process exited with code ' + code);
+                controller.atf_process = null;
             });
 
             res.status(201).send("Done");
@@ -366,15 +385,20 @@ controller.test_suite_config = function(req, res) {
             break;
         }
         case 'stop_atf' : {
-            this.atf_process.kill('SIGHUP');
-            this.atf_process = null;
-            res.status(201).send();
+            if (this.atf_process) {
+                killTreeProcesses(this.atf_process.pid, 'SIGHUP', function(){
+                    controller.atf_process = null;
+                    res.status(201).send();
+                });
+            }
             break;
         }
         case 'stop_sdl' : {
-            if (this.sdl_process) {
-                this.sdl_process.kill();
-                this.sdl_process = null;
+            if (this.sdl_process && !this.atf_process) {
+                killTreeProcesses(this.sdl_process.pid, 'SIGHUP', function(){
+                    controller.sdl_process = null;
+                    res.status(201).send();
+                });
             }
             break;
         }

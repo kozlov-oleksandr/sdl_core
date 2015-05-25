@@ -1,5 +1,6 @@
 build/
 .idea/
+atf_ui/node_modules/
 atf_bin/mobile.out
 atf_ui/npm-debug.log
 atf_bin/modules/config.lua
