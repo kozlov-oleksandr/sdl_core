@@ -360,15 +360,15 @@ controller.test_suite_config = function(req, res) {
             );
 
             this.atf_process.on('message', function(m) {
-                controller.clients[0].atf.send(m);
+                controller.clients[0].atf.send('' + m);
             });
 
             this.atf_process.stdout.on('data', function (data) {
-                controller.clients[0].atf.send(data);
+                controller.clients[0].atf.send('' + data);
             });
 
             this.atf_process.stderr.on('data', function (data) {
-                controller.clients[0].atf.send(data);
+                controller.clients[0].atf.send('' + data);
             });
 
             this.atf_process.on('exit', function (code) {

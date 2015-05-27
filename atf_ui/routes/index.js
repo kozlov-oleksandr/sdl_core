@@ -9,7 +9,7 @@ router.get('/', function(req, res, next) {
 
 /* GET main configuration page. */
 router.get('/config', function(req, res, next) {
-    res.render('config', { title: 'ATF Configuration', config: req.app.locals.mainConfig });
+    res.render('config', { title: 'ATF Configuration', config: req.app.locals.mainConfig[req.session.userName] });
 });
 
 /* GET test suite configuration page. */

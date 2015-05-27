@@ -140,11 +140,13 @@ $('#start_atf').click(function() {
             };
 
             socketATF.onmessage = function(event) {
+                console.log(event.data);
                 $("#atf_log").append(event.data);
                 $('#atf_log').scrollTop($('#atf_log')[0].scrollHeight - $('#atf_log').height());
             };
 
             socketATF.onerror = function(error) {
+                console.log(event.data);
                 $("#atf_log").append("Error " + error.message);
                 $('#atf_log').scrollTop($('#atf_log')[0].scrollHeight - $('#atf_log').height());
             };
