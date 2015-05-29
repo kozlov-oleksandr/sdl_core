@@ -116,6 +116,8 @@ controller.newUser = function(req, res) {
 
             if (req.app.locals.mainConfig === null) {
                 req.app.locals.mainConfig = {};
+            }
+            if (!(req.body.data in req.app.locals.mainConfig)) {
                 req.app.locals.mainConfig[req.body.data] = new config.Config();
             }
 
@@ -311,27 +313,27 @@ controller.test_suite_config = function(req, res) {
 
             if (!req.app.locals.mainConfig[req.session.userName].file_path) {
                 logAndSendError(res, "Path to SDL is not set");
-                break;
-            }
-            if (!this.sdl_process) {
-                console.log("Start SDL.............");
+            } else {
+                if (!this.sdl_process) {
+                    console.log("Start SDL.............");
 
-                var proc = child_process.exec;
+                    var proc = child_process.exec;
 
-                this.sdl_process = proc(req.app.locals.mainConfig[req.session.userName].file_path,
-                    {'cwd': require('path').dirname(req.app.locals.mainConfig[req.session.userName].file_path)});
+                    this.sdl_process = proc(req.app.locals.mainConfig[req.session.userName].file_path,
+                        {'cwd': require('path').dirname(req.app.locals.mainConfig[req.session.userName].file_path)});
 
-                this.sdl_process.stdout.on('data', function (data) {
-                    controller.clients[0].sdl.send(data);
-                });
+                    this.sdl_process.stdout.on('data', function (data) {
+                        controller.clients[0].sdl.send(data);
+                    });
 
-                this.sdl_process.stderr.on('data', function (data) {
-                    controller.clients[0].sdl.send(data);
-                });
+                    this.sdl_process.stderr.on('data', function (data) {
+                        controller.clients[0].sdl.send(data);
+                    });
 
-                this.sdl_process.on('exit', function (code) {
-                    controller.clients[0].sdl.send(code);
-                });
+                    this.sdl_process.on('exit', function (code) {
+                        controller.clients[0].sdl.send(code);
+                    });
+                }
             }
 
             // Silent needed to handle logs from child process
