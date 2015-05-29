@@ -26,6 +26,13 @@ input {
     cursor: pointer;
 }
 
+#edit_test_suit.button,
+#delete_test_suit.button {
+    float: right;
+    width: 100px;
+    text-align: center;
+}
+
 #main_configuration_container.main_container,
 #test_suite_configuration_container.main_container {
     border: 2px solid#A4B7BE;

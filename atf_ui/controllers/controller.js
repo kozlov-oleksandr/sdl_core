@@ -103,6 +103,19 @@ controller.copyAdditionalFiles = function() {
     });
 };
 
+controller.listOfTestSuits = function() {
+    var results = [];
+    var list = fs.readdirSync(testSuitePath);
+    list.forEach(function(file) {
+        filePath = testSuitePath + file;
+        var stat = fs.statSync(filePath);
+        if (stat && stat.isDirectory()) {
+            results.push(file);
+        }
+    });
+    return results;
+}
+
 controller.newUser = function(req, res) {
     switch (req.body.objectData) {
         case 'login' :
@@ -262,16 +275,7 @@ controller.test_suite_config = function(req, res) {
         case 'test_suite_list' : {
             console.log('Received request test_suits_list................');
 
-            results = [];
-            list = fs.readdirSync(testSuitePath);
-            list.forEach(function(file) {
-                filePath = testSuitePath + file;
-                var stat = fs.statSync(filePath);
-                if (stat && stat.isDirectory()) {
-                    results.push(file);
-                }
-            });
-
+            var results = this.listOfTestSuits();
             res.status(201).send(results);
             break;
         }
@@ -390,7 +394,7 @@ controller.test_suite_config = function(req, res) {
         }
         case 'add_test_suit' : {
             console.log('Received request to add new test suit with scripts: ' + req.body.data.test_scripts);
-            path = "/tmp/testsuits/" + req.body.data.folder_name + "/";
+            var path = testSuitePath + req.body.data.folder_name + "/";
             console.log('path ' + path);
             fs.mkdirSync(path, function(err) {
                     if (err && err.code != 'EEXIST') {
@@ -404,6 +408,15 @@ controller.test_suite_config = function(req, res) {
                 require('child_process').spawn('mv', [uploadPath + req.body.data.test_scripts[i], path]);
 
             }
+            break;
+        }
+        case 'delete_test_suit': {
+            var path = testSuitePath + req.body.data.test_suit + "/";
+            child_process.exec( 'rm -r ' + path, function ( err, stdout, stderr ){
+                if (!err) {
+                    res.status(201).send(controller.listOfTestSuits());
+                }
+            });
             break;
         }
         default: {

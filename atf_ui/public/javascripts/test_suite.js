@@ -36,27 +36,29 @@ updateTestSuiteDescription = function(value){
     );
 };
 
-updateTestSuiteList = function(value){
-
+fillTestSuits = function(res) {
     $('#test_suite_list').empty();
     $('#list_of_suits').empty();
 
-    request('test_suite_list', function(res){
+    for (var i = 0; i < res.length; i++) {
+        $('#test_suite_list')
+            .append($("<option></option>")
+                .attr("value", res[i])
+                .text(res[i]));
+        $('#list_of_suits')
+            .append($("<input/>")
+                .attr({
+                    type: "checkbox",
+                    value: res[i],
+                    checked: true}))
+            .append(res[i])
+            .append($("<br/>"));
+    }
+};
 
-        for (var i = 0; i < res.length; i++) {
-            $('#test_suite_list')
-                .append($("<option></option>")
-                    .attr("value", res[i])
-                    .text(res[i]));
-            $('#list_of_suits')
-                .append($("<input/>")
-                    .attr({
-                        type: "checkbox",
-                        value: res[i],
-                        checked: true}))
-                .append(res[i])
-                .append($("<br/>"));
-        }
+updateTestSuiteList = function(value){
+    request('test_suite_list', function(res){
+        fillTestSuits(res);
     });
 };
 
@@ -237,6 +239,20 @@ $('#add_test_suit_btn').click(function() {
 
 $('#cancel_test_suit').click(function() {
     finishAddSuite(false);
+});
+
+$('#edit_test_suit').click(function() {
+
+});
+
+$('#delete_test_suit').click(function() {
+    console.log('delete test suit ' + $('#test_suite_list').find(":selected").text());
+    request(
+        'delete_test_suit',
+        fillTestSuits,
+        {
+            'test_suit': $('#test_suite_list').find(":selected").text()
+        });
 });
 
 $("#colorScheme").spectrum({
