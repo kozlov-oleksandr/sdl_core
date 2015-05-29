@@ -51,23 +51,23 @@ block content
 
     #footer
         div(class='footer-box') SDL file name:
-            p(class='footer_param') #{config.file_path}
+            p(class='footer_param') #{config.sdlFilePath}
         div(class='footer-box') heartBeat timeout:
-            p(class='footer_param') #{config.hb_timeout}
+            p(class='footer_param') #{config.hearBeatTimeout}
         div(class='footer-box') testRecord folder:
-            p(class='footer_param') #{config.testRecord_path}
+            p(class='footer_param') #{config.testRecordPath}
         div(class='footer-box') Mobile connection string:
-            p(class='footer_param') #{config.MOB_connection_str}
+            p(class='footer_param') #{config.mobileConnectionStr}
         div(class='footer-box') HMI connection string:
-            p(class='footer_param') #{config.HMI_connection_str}
+            p(class='footer_param') #{config.hmiConnectionStr}
         div(class='footer-box') PerfLog connection string:
-            p(class='footer_param') #{config.PerfLog_connection_str}
+            p(class='footer_param') #{config.perfLogConnectionStr}
         div(class='footer-box') Client PerfLog connection string:
             p(class='footer_param') #{config.client_PerfLog_connection_str}
         div(class='footer-box') Time for launch SDLProc:
-            p(class='footer_param') #{config.launch_time}
+            p(class='footer_param') #{config.launchTime}
         div(class='footer-box') terminal CMD:
-            p(class='footer_param') #{config.terminal_name}
+            p(class='footer_param') #{config.terminalName}
 
     include modals/add_test_suit
     script(src="/javascripts/test_suite.js")

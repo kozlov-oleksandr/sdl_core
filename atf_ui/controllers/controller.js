@@ -3,6 +3,7 @@ var child_process = require('child_process');
 var fs = require("fs");
 var WebSocketServer = require('ws');
 var psTree = require('ps-tree');
+var config = require("./config.js");
 
 var controller = {
     atf_process: null,
@@ -35,11 +36,11 @@ controller.init = function(){
     }
 
 
-// подключенные клиенты
+// connected clients
     controller.clients = {};
     controller.clients[0] = {};
 
-// WebSocket-сервер на порту 8081
+// WebSocket-server on port 8081
     var SDLLogServer = new WebSocketServer.Server({
         port: 8081
     });
@@ -92,12 +93,10 @@ controller.copyAdditionalFiles = function() {
             "failed to read uploaded files directory. " + err);
             return;
         }
-        console.log(files);
         files = files.filter(function(file) {
             return !(file === '.' || file === '..'
             || require("path").extname(file) === '.lua');
         });
-        console.log(files);
         files.forEach(function(file) {
             require('child_process').spawn('mv', [uploadPath + file, controller.atf_path + "files/"]);
         });
@@ -117,7 +116,7 @@ controller.newUser = function(req, res) {
 
             if (req.app.locals.mainConfig === null) {
                 req.app.locals.mainConfig = {};
-                req.app.locals.mainConfig[req.body.data] = {};
+                req.app.locals.mainConfig[req.body.data] = new config.Config();
             }
 
             console.log('MainConfig is................');
@@ -147,6 +146,7 @@ controller.saveConfiguration = function(req, res) {
     console.log("User Name " + req.session.userName);
 
     req.app.locals.mainConfig[req.session.userName] = req.body;
+    config.updateATFConfig(req.app.locals.mainConfig[req.session.userName]);
 
     console.log("MainConfig is...........");
     console.log(req.app.locals.mainConfig);
@@ -185,22 +185,6 @@ controller.saveConfiguration = function(req, res) {
         console.log("Index rendered...................");
     }
 
-    fs.readFile(__dirname + "/../../atf_bin" + "/modules/config.lua", 'utf8',
-        function(err, data) {
-            if (err) {
-                console.log("Failed to read ATF config file. " + err);
-                return;
-            }
-            var updatedData = '';
-            if (-1 === data.indexOf('SDLStoragePath')) {
-                updatedData = data.replace(/local config = \{ \}/,
-                    "local config = { }\nconfig.SDLStoragePath = \"" + req.app.locals.mainConfig.SDLStoragePath+"\"");
-            } else {
-                updatedData = data.replace(/config\.SDLStoragePath.*/,
-                    "config.SDLStoragePath = \"" + req.app.locals.mainConfig.SDLStoragePath+"\"");
-            }
-            fs.writeFileSync(__dirname + "/../../atf_bin" + "/modules/config.lua", updatedData, 'utf8');
-    });
 
     res.redirect("back");
 };

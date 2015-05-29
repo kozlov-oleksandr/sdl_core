@@ -7,34 +7,34 @@ block content
     #main_configuration_container(class='main_container')
         form(action='/save',method='post')
             p SDL file name
-            input(name='file_path', value='#{config.file_path}')
+            input(name='sdlFilePath', value='#{config.sdlFilePath}')
 
             p heartBeat timeout
-            input(name='hb_timeout', value='#{config.hb_timeout}')
+            input(name='hearBeatTimeout', value='#{config.hearBeatTimeout}')
 
             p testRecord folder
-            input(name='testRecord_path', type='text', value='#{config.testRecord_path}')
+            input(name='testRecordPath', type='text', value='#{config.testRecordPath}')
 
             p Mobile connection string
-            input(name='MOB_connection_str', value='#{config.MOB_connection_str}')
+            input(name='mobileConnectionStr', value='#{config.mobileConnectionStr}')
 
             p HMI connection string
-            input(name='HMI_connection_str', value='#{config.HMI_connection_str}')
+            input(name='hmiConnectionStr', value='#{config.hmiConnectionStr}')
 
             p PerfLog connection string
-            input(name='PerfLog_connection_str', value='#{config.PerfLog_connection_str}')
+            input(name='perfLogConnectionStr', value='#{config.perfLogConnectionStr}')
 
             p Time for launch SDLProc
-            input(name='launch_time', value='#{config.launch_time}')
+            input(name='launchTime', value='#{config.launchTime}')
 
             p Client PerfLog connection string
             input(name='client_PerfLog_connection_str', value='#{config.client_PerfLog_connection_str}')
 
             p terminal CMD
-            input(name='terminal_name', value='#{config.terminal_name}')
+            input(name='terminalName', value='#{config.terminalName}')
 
             p SDLStoragePath
-            input(name="SDLStoragePath", value='#{config.SDLStoragePath}')
+            input(name="sdlStoragePath", value='#{config.sdlStoragePath}')
 
             p
             input(type='submit')
