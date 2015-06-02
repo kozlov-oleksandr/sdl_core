@@ -198,6 +198,8 @@ function finishAddSuite(success) {
     $('#list_of_tests').empty();
     var new_test_suit = document.getElementById("test_suit_name").value;
     document.getElementById("test_suit_name").value = '';
+    $("#add_test_suit_btn").show();
+    $('#edit_test_suit_btn').hide();
     dialog.close();
     if (success) {
         $('#test_suite_list')
@@ -242,7 +244,59 @@ $('#cancel_test_suit').click(function() {
 });
 
 $('#edit_test_suit').click(function() {
+    document.getElementById("test_suit_name").value = $('#test_suite_list').find(':selected').text();
+    $("#add_test_suit_btn").hide();
+    $('#edit_test_suit_btn').show();
+    request('test_cases_in_suit', function(res){
+        for (var i = 0; i < res.length; i++) {
+            $('#list_of_tests')
+                .append($("<input/>")
+                    .attr({
+                        type: "checkbox",
+                        value: res[i],
+                        checked: true}))
+                .append(res[i])
+                .append($("<br/>"));
+        }
+    },
+    {
+        "test_suit": $('#test_suite_list').find(':selected').text()
+    });
+    request('test_cases_list', function(res){
+        for (var i = 0; i < res.length; i++) {
+            $('#list_of_tests')
+                .append($("<input/>")
+                    .attr({
+                        type: "checkbox",
+                        value: res[i]}))
+                .append(res[i])
+                .append($("<br/>"));
+        }
+    });
+    dialog.showModal();
+});
 
+$('#edit_test_suit_btn').click(function() {
+    var test_scripts = [];
+    $('#list_of_tests').children("input").each(function() {
+        if(this.checked) {
+            test_scripts.push(this.value);
+        }
+    });
+
+    var folder = document.getElementById("test_suit_name").value;
+
+    request(
+        'edit_test_suit',
+        function(res) {
+            finishAddSuite(false);
+            fillTestSuits(res);
+        },
+        {
+            'old_test_suit': $('#test_suite_list').find(":selected").text(),
+            "test_suit": folder,
+            "test_scripts": test_scripts
+        });
 });
 
 $('#delete_test_suit').click(function() {

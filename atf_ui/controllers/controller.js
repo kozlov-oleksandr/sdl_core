@@ -116,6 +116,20 @@ controller.listOfTestSuits = function() {
     return results;
 }
 
+controller.listOfTestCases = function(testCasesPath) {
+    var results = [];
+
+    var list = fs.readdirSync(testCasesPath);
+    list.forEach(function(file) {
+        filePath = testCasesPath + file;
+        var stat = fs.statSync(filePath);
+        if (!(stat && stat.isDirectory()) && require('path').extname(file) === '.lua') {
+            results.push(file);
+        }
+    });
+    return results;
+}
+
 controller.newUser = function(req, res) {
     switch (req.body.objectData) {
         case 'login' :
@@ -258,17 +272,12 @@ controller.test_suite_config = function(req, res) {
     switch (req.body.objectData) {
         case 'test_cases_list' : {
             console.log('Received request test_cases_list................');
-
-            results = [];
-            list = fs.readdirSync(uploadPath);
-            list.forEach(function(file) {
-                filePath = uploadPath + file;
-                var stat = fs.statSync(filePath);
-                if (!(stat && stat.isDirectory()) && require('path').extname(file) === '.lua') {
-                    results.push(file);
-                }
-            });
-
+            var results = controller.listOfTestCases(uploadPath);
+            res.status(201).send(results);
+            break;
+        }
+        case 'test_cases_in_suit' : {
+            var results = this.listOfTestCases(testSuitePath + req.body.data.test_suit + "/");
             res.status(201).send(results);
             break;
         }
@@ -289,20 +298,10 @@ controller.test_suite_config = function(req, res) {
                 currentTestSuite = list[0];
             }
 
-            path = testSuitePath + currentTestSuite;
-            list = fs.readdirSync(path);
-            results = [];
-
+            var path = testSuitePath + currentTestSuite;
+            var results = [];
             results.push("Test suite " + req.body.data);
-
-            list.forEach(function(file) {
-                filePath = path + "/" + file;
-                console.log(filePath);
-                var stat = fs.statSync(filePath);
-                if (!(stat && stat.isDirectory())) {
-                    results.push(file);
-                }
-            });
+            results += this.listOfTestCases(path);
 
             res.status(201).send(results);
             break;
@@ -405,9 +404,30 @@ controller.test_suite_config = function(req, res) {
 
             for(var i = 0; i < req.body.data.test_scripts.length; i++){
 
-                require('child_process').spawn('mv', [uploadPath + req.body.data.test_scripts[i], path]);
+                child_process.spawn('mv', [uploadPath + req.body.data.test_scripts[i], path]);
 
             }
+            break;
+        }
+        case 'edit_test_suit': {
+            var oldTestSuit = req.body.data.old_test_suit;
+            var newTestSuit = req.body.data.test_suit;
+            if (oldTestSuit !== newTestSuit) {
+                fs.renameSync(testSuitePath + oldTestSuit, testSuitePath + newTestSuit);
+            }
+            var list = fs.readdirSync(testSuitePath + newTestSuit);
+            var scripts = req.body.data.test_scripts;
+            list.forEach(function(file) {
+                if (-1 === scripts.indexOf(file)) {
+                    fs.unlinkSync(testSuitePath + newTestSuit + "/" + file);
+                }
+            });
+            for(testCase in scripts) {
+                if (-1 === list.indexOf(scripts[testCase])) {
+                    child_process.spawn('mv', [uploadPath + scripts[testCase], testSuitePath + newTestSuit + "/"]);
+                }
+            }
+            res.status(201).send(this.listOfTestSuits());
             break;
         }
         case 'delete_test_suit': {
