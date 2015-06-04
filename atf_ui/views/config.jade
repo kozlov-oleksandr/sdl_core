@@ -6,54 +6,36 @@ block content
 
     #main_configuration_container(class='main_container')
         form(action='/save',method='post')
-            if (config)
-                p SDL file name
-                input(name='file_path', value='#{config.file_path}')
+            p SDL file name
+            input(name='sdlFilePath', value='#{config.sdlFilePath}')
 
-                p heartBeat timeout
-                input(name='hb_timeout', value='#{config.hb_timeout}')
+            p heartBeat timeout
+            input(name='hearBeatTimeout', value='#{config.hearBeatTimeout}')
 
-                p testRecord folder
-                input(name='testRecord_path', type='text', value='#{config.testRecord_path}')
+            p testRecord folder
+            input(name='testRecordPath', type='text', value='#{config.testRecordPath}')
 
-                p Mobile connection string
-                input(name='MOB_connection_str', value='#{config.MOB_connection_str}')
+            p Mobile connection string
+            input(name='mobileConnectionStr', value='#{config.mobileConnectionStr}')
 
-                p HMI connection string
-                input(name='HMI_connection_str', value='#{config.HMI_connection_str}')
+            p HMI connection string
+            input(name='hmiConnectionStr', value='#{config.hmiConnectionStr}')
 
-                p PerfLog connection string
-                input(name='PerfLog_connection_str', value='#{config.PerfLog_connection_str}')
+            p PerfLog connection string
+            input(name='perfLogConnectionStr', value='#{config.perfLogConnectionStr}')
 
-                p Time for launch SDLProc
-                input(name='launch_time', value='#{config.launch_time}')
+            p Time for launch SDLProc
+            input(name='launchTime', value='#{config.launchTime}')
 
-                p terminal CMD
-                input(name='terminal_name', value='#{config.terminal_name}')
-            else
-                p SDL file name
-                input(name='file_path')
+            p Client PerfLog connection string
+            input(name='client_PerfLog_connection_str', value='#{config.client_PerfLog_connection_str}')
 
-                p heartBeat timeout
-                input(name='hb_timeout')
+            p terminal CMD
+            input(name='terminalName', value='#{config.terminalName}')
 
-                p testRecord folder
-                input(name='testRecord_path')
+            p SDLStoragePath
+            input(name="sdlStoragePath", value='#{config.sdlStoragePath}')
 
-                p Mobile connection string
-                input(name='MOB_connection_str')
-
-                p HMI connection string
-                input(name='HMI_connection_str')
-
-                p PerfLog connection string
-                input(name='PerfLog_connection_str')
-
-                p Time for launch SDLProc
-                input(name='launch_time')
-
-                p terminal CMD
-                input(name='terminal_name')
             p
             input(type='submit')
             input(type='reset')

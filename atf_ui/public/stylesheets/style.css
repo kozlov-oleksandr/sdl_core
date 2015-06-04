@@ -7,6 +7,14 @@ a {
   color: #00B7FF;
 }
 
+.disabled {
+    display: none !important;
+}
+
+input {
+    margin: 10px;
+}
+
 .button {
     border-radius: 2px;
     border: 1px solid rgba(163, 163, 163, 0.99);
@@ -14,20 +22,92 @@ a {
     background: linear-gradient(rgb(246, 246, 246), rgb(221, 221, 221));
     text-decoration: initial;
     display: inline-block;
+    margin: 5px;
+    cursor: pointer;
+}
+
+#edit_test_suit.button,
+#delete_test_suit.button {
+    float: right;
+    width: 100px;
+    text-align: center;
 }
 
 #main_configuration_container.main_container,
 #test_suite_configuration_container.main_container {
     border: 2px solid#A4B7BE;
     border-radius: 4px;
-    padding: 10px;
     max-width: 1400px;
     margin: 0 auto;
     min-width: 700px;
 }
 
 #test_suite_configuration_container.main_container {
-    height: 500px;
+    position:relative;
+    height: 1000px;
+    box-shadow: 0 0 30px rgba(0,0,0,0.5);
+}
+
+.functional_block {
+    background-color: rgba(202, 235, 252, 0.48);
+    height: 45%;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+    width: 50%;
+    display: inline-block;
+}
+
+#test_suite_add {
+    margin: 10px;
+}
+
+.delimiter {
+    border-top: 1px;
+    border-top-style: dotted;
+    border-top-color: #A4B7BE;
+    margin-top: 5px;
+    margin-left: 2px;
+    margin-right: 2px;
+}
+
+.innerContainer {
+    padding: 10px;
+}
+
+.functional_block.right {
+    float: right;
+}
+
+.header {
+    background-color: rgba(142, 142, 142, 0.2);
+    padding: 30px;
+    margin: 0px;
+}
+
+.uploadForm {
+    padding-bottom: 20px;
+}
+
+.functional_block.bottom {
+    position:absolute;
+    top: 450px;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+}
+
+.functional_block.left {
+    left: 0px;
+    width: 100%;
+    height: 55%;
+}
+
+#test_suite_list_area.container{
+    height: 200px;
+    width: 400px;
+    display: inline;
+}
+
+#test_suite_list_area .test_suite_list{
+    width: 339px;
+    height: 22px;
 }
 
 #main_configuration_container.main_container {
@@ -51,7 +131,7 @@ a {
     margin: 2px;
     border-radius: 2px;
     padding: 2px;
-    background-color: rgba(127, 206, 247, 1);
+    background-color: rgba(230, 245, 254, 0.99);
 }
 
 .footer_param{
@@ -60,26 +140,119 @@ a {
     color: #00901D;
 }
 
-.description {
+.description{
     float: left;
     overflow: auto;
-    resize: none;
-    width: 300px;
+    /*resize: none;*/
+    height: 242px;
+    width: 394px;
     margin-top: 10px;
+}
+
+
+.SDL_log,
+.ATF_log {
+
+    width: 100%;
+    margin: 0px;
+    height: 198px;
+    border: none;
+    padding: 0px;
+    box-shadow: inset 0 0 5px rgba(145, 145, 145, 1);
+    resize: none;
+    background-color: rgba(255, 255, 255, 0.53);
 }
 
 #test_suite_list_area.container{
     height: 200px;
     width: 400px;
-    float: right;
 }
 
-#test_suite_list_area .test_suite_list {
+#test_suite_list_area .test_suite_list{
     width: 339px;
     height: 22px;
 }
 
-#test_suite_list_area .update_list {
+#test_suite_list_area .update_list{
     float: right;
 }
 
+dialog {
+    border: none;
+    background: transparent;
+}
+
+.modal-dialog{
+    width: 600px;
+}
+
+.modal-content{
+    border-radius: 6px;
+    background-color: #fff;
+    border: 1px solid rgba(0,0,0,.2);
+    box-shadow: 0 3px 9px rgba(0,0,0,.5);
+}
+
+.modal-header{
+    height: 15px;
+    padding: 15px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.modal-body {
+    position: relative;
+    padding: 15px;
+}
+
+.modal-footer {
+    padding: 15px;
+    text-align: right;
+    border-top: 1px solid #e5e5e5;
+}
+
+.modal-title {
+    margin: 0;
+}
+
+#list_of_suits.container {
+    border: 1px solid #e5e5e5;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    float: top;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+#log {
+    float: top;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.label {
+    float: top;
+    display: block;
+    text-align: left;
+    margin: 5px;
+}
+
+.button_container {
+    float: top;
+    display: inline-block;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+#run_test_suits.container {
+    margin-top: 10px;
+    float: left;
+    vertical-align: bottom;
+}
+.functional_block.right {
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.hidden {
+    display: none;
+}

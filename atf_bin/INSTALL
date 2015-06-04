@@ -1,0 +1,4 @@
+To run ATF interpreter do following steps:
+1. Install liblua5.2.so (run `sudo apt-get install liblua5.2` on Debian systems)
+2. Install liblpeg (run `sudo apt-get install lua-lpeg`)
+3. Run `./run` executable with test script filename as argument (e.g. `./run sample.lua`)

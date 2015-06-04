@@ -3,7 +3,15 @@ extends layout
 block content
     h1= title
     p Welcome to #{title}
+    <br>
+    p Sign in
+
+    input(type="text", name="user_name", id="sing_in")
+    #enter(class="button") Ok
+
     p
-        a(class='button', href='http://localhost:3000/config') go to config
+        a(id='config', class='button disabled', href='http://localhost:3000/config') go to config
     p
-        a(class='button', href='http://localhost:3000/test_suite') go to test_suite
+        a(id='test_suite', class='button disabled', href='http://localhost:3000/test_suite') go to test_suite
+
+    script(src="/javascripts/start.js")

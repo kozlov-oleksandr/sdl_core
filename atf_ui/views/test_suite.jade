@@ -1,50 +1,75 @@
 extends layout
 
 block content
-
-    //script(type='text/javascript'). //Apparently Jade requires a dot after the first closing parenthesis.
-    //    var local_data = !{JSON.stringify(suiteList)}
+    script(src="/javascripts/spectrum.js")
+    link(rel='stylesheet', href='stylesheets/spectrum.css', type='text/css' )
 
     h1= title
     p Welcome to #{title}
 
     #test_suite_configuration_container(class='main_container')
-        p Upload test cases
-        form(action="/upload", method="post", enctype="multipart/form-data")
-            input(type="file", name="file_upload", multiple)
-            input(type='submit', name="upload", value="upload")
+        div(class="functional_block")
+            div(class="innerContainer")
+                p(class="header") Upload test cases
+                form(action="/upload", method="post", enctype="multipart/form-data", class="uploadForm")
+                    input(type="file", name="file_upload", multiple)
+                    p Additional test-data upload (icons, etc)
+                    input(type="file", name="icon_file_upload", multiple)
+                    input(type='submit', name="upload", value="upload")
 
+                #test_suite_add(class="button") Add test suite
 
-        #test_suite_list_area(class='container')
-            p Test suite list
-            select(id='test_suite_list', class='test_suite_list')
+        div(class="functional_block right")
+            div(class="innerContainer")
+                label(class='label') Select test suits to run
+                div(id='list_of_suits', class="container")
 
-            #update_list(class='button update_list') Update
+                div(class="button_container")
+                    #start_atf(type="button", class="button") Start ATF
+                    #stop_atf(type="button", class="button", disabled="disabled") Stop ATF
+                    #clean_sdl(type="button", class="button", disabled="disabled") Stop SDL
 
-            textarea(id='description', class='description', rows=7, cols=1, readonly='readonly')
+                #test_suite_list_area(class='container')
+                    p Test suite list
+                    select(id='test_suite_list', class='test_suite_list')
 
-            #test_suite_add(class='button') Add test suite
+                    #update_list(class='button update_list') Update
 
+                    textarea(id='description', class='description', rows=7, cols=1, readonly='readonly')
+                    #edit_test_suit(class='button') Edit Test Suit
+                    #delete_test_suit(class='button') Delete Test Suit
 
+        div(class="functional_block left bottom ")
+            div(class="innerContainer")
+
+        label(class='label') ATF Log
+        textarea(id='atf_log', class='ATF_log', rows=7, cols=1, readonly='readonly')
+
+        label(class='label') SDL Log
+        textarea(id='sdl_log', class='SDL_log', rows=7, cols=1, readonly='readonly')
 
     a(class='button', href='http://localhost:3000') Back
+    div(id='colorScheme', class='button') Change Color
 
     #footer
         div(class='footer-box') SDL file name:
-            p(class='footer_param') #{config.file_path}
+            p(class='footer_param') #{config.sdlFilePath}
         div(class='footer-box') heartBeat timeout:
-            p(class='footer_param') #{config.hb_timeout}
+            p(class='footer_param') #{config.hearBeatTimeout}
         div(class='footer-box') testRecord folder:
-            p(class='footer_param') #{config.testRecord_path}
+            p(class='footer_param') #{config.testRecordPath}
         div(class='footer-box') Mobile connection string:
-            p(class='footer_param') #{config.MOB_connection_str}
+            p(class='footer_param') #{config.mobileConnectionStr}
         div(class='footer-box') HMI connection string:
-            p(class='footer_param') #{config.HMI_connection_str}
+            p(class='footer_param') #{config.hmiConnectionStr}
         div(class='footer-box') PerfLog connection string:
-            p(class='footer_param') #{config.PerfLog_connection_str}
+            p(class='footer_param') #{config.perfLogConnectionStr}
+        div(class='footer-box') Client PerfLog connection string:
+            p(class='footer_param') #{config.client_PerfLog_connection_str}
         div(class='footer-box') Time for launch SDLProc:
-            p(class='footer_param') #{config.launch_time}
+            p(class='footer_param') #{config.launchTime}
         div(class='footer-box') terminal CMD:
-            p(class='footer_param') #{config.terminal_name}
+            p(class='footer_param') #{config.terminalName}
 
+    include modals/add_test_suit
     script(src="/javascripts/test_suite.js")
