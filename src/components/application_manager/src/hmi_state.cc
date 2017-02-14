@@ -59,9 +59,18 @@ void HmiState::set_parent(HmiStatePtr parent) {
   parent_ = parent;
 }
 
+mobile_apis::DeviceRank::eType HmiState::device_rank() const
+{
+    return device_rank_;
+}
+
+void HmiState::set_device_rank(const mobile_apis::DeviceRank::eType &device_rank) {
+    device_rank_ = device_rank;
+}
+
 bool HmiState::is_navi_app(const uint32_t app_id) const {
-  const ApplicationSharedPtr app = app_mngr_.application(app_id);
-  return app ? app->is_navi() : false;
+    const ApplicationSharedPtr app = app_mngr_.application(app_id);
+    return app ? app->is_navi() : false;
 }
 
 bool HmiState::is_media_app(const uint32_t app_id) const {

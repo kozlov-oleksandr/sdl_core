@@ -247,7 +247,6 @@ void CoreService::SubscribeToHMINotification(
 void CoreService::ChangeNotifyHMILevel(ApplicationSharedPtr app,
                                        mobile_apis::HMILevel::eType level) {
   application_manager_.ChangeAppsHMILevel(app->app_id(), level);
-  MessageHelper::SendHMIStatusNotification(*app, application_manager_);
 }
 
 void CoreService::NotifyHMIAboutHMILevel(ApplicationSharedPtr app,

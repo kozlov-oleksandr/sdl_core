@@ -70,6 +70,9 @@ class StateController {
       const mobile_apis::AudioStreamingState::eType audio_state) = 0;
 
   virtual void SetRegularState(
+        ApplicationSharedPtr app, const mobile_apis::DeviceRank::eType device_rank) = 0;
+
+  virtual void SetRegularState(
       ApplicationSharedPtr app,
       const mobile_apis::SystemContext::eType system_context) = 0;
 

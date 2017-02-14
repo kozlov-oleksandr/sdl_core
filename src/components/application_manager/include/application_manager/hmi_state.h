@@ -165,14 +165,19 @@ class HmiState {
     state_id_ = state_id;
   }
 
- protected:
+  mobile_apis::DeviceRank::eType device_rank() const;
+  void set_device_rank(const mobile_apis::DeviceRank::eType &device_rank);
+
+protected:
   uint32_t app_id_;
   StateID state_id_;
   const ApplicationManager& app_mngr_;
   HmiStatePtr parent_;
+
   mobile_apis::HMILevel::eType hmi_level_;
   mobile_apis::AudioStreamingState::eType audio_streaming_state_;
   mobile_apis::SystemContext::eType system_context_;
+  mobile_apis::DeviceRank::eType device_rank_;
 
  protected:
   /**

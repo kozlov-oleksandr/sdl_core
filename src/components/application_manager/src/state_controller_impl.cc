@@ -41,10 +41,14 @@ namespace application_manager {
 CREATE_LOGGERPTR_GLOBAL(logger_, "StateControllerImpl")
 
 bool IsStatusChanged(HmiStatePtr old_state, HmiStatePtr new_state) {
-  if (old_state->hmi_level() != new_state->hmi_level() ||
-      old_state->audio_streaming_state() !=
-          new_state->audio_streaming_state() ||
-      old_state->system_context() != new_state->system_context()) {
+  const bool hmi_level_changed = old_state->hmi_level() != new_state->hmi_level();
+  const bool audio_streaming_state_changed = old_state->audio_streaming_state() != new_state->audio_streaming_state();
+  const bool system_context_state_changed = old_state->system_context() != new_state->system_context();
+  const bool device_rank_changed = old_state->device_rank() != new_state->device_rank();
+  if (hmi_level_changed ||
+      audio_streaming_state_changed ||
+      system_context_state_changed ||
+      device_rank_changed) {
     return true;
   }
   return false;
@@ -214,6 +218,29 @@ void StateControllerImpl::SetRegularState(
   hmi_state->set_system_context(system_context);
   SetRegularState(app, hmi_state, false);
 }
+
+void StateControllerImpl::SetRegularState(
+    ApplicationSharedPtr app,
+    const  mobile_apis::DeviceRank::eType device_rank) {
+  CREATE_LOGGERPTR_LOCAL(logger_, "StateControllerImpl");
+  LOG4CXX_AUTO_TRACE(logger_);
+  if (!app) {
+    LOG4CXX_ERROR(logger_, "Invalid application pointer");
+    return;
+  }
+  HmiStatePtr prev_regular = app->RegularHmiState();
+  DCHECK_OR_RETURN_VOID(prev_regular);
+  HmiStatePtr hmi_state =
+      CreateHmiState(app->app_id(), HmiState::StateID::STATE_ID_REGULAR);
+  DCHECK_OR_RETURN_VOID(hmi_state);
+  hmi_state->set_hmi_level(prev_regular->hmi_level());
+  hmi_state->set_audio_streaming_state(
+      CalcAudioState(app, prev_regular->hmi_level()));
+  hmi_state->set_system_context(prev_regular->system_context());
+  hmi_state->set_device_rank(device_rank);
+  SetRegularState(app, hmi_state, false);
+}
+
 
 void StateControllerImpl::SetRegularState(
     ApplicationSharedPtr app,

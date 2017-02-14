@@ -119,6 +119,11 @@ class StateControllerImpl : public event_engine::EventObserver,
       ApplicationSharedPtr app,
       const mobile_apis::AudioStreamingState::eType audio_state);
 
+
+  void SetRegularState(
+          ApplicationSharedPtr app,
+          const  mobile_apis::DeviceRank::eType device_rank) OVERRIDE;
+
   /**
    * @brief SetRegularState Change regular  system context
    * @param app appication to setup regular State
