@@ -324,21 +324,19 @@ class CommandRequestImpl : public CommandImpl,
       const hmi_apis::FunctionID::eType& function_id);
 
   /**
+   * @brief Add information for the component of response
+   * @param response Response message, which info should be extended
+   */
+  void AddComponentInfoToMessage(
+      smart_objects::SmartObjectSPtr& response) const;
+
+  /**
    * @brief Method transforms AppHMIType to string
    * @param enum AppHMIType app_hmi_type contains enum value
    * @return string of AppHMIType
    */
   std::string AppHMITypeToString(
       const mobile_apis::AppHMIType::eType app_hmi_type) const;
-
-  /**
-   * @brief Adds information to result message "info" param in case of
-   GENERIC_ERROR
-            about component which not responded in time
-   * @param response Response message, which info should be extended
-   */
-  void AddTimeOutComponentInfoToMessage(
-      smart_objects::SmartObject& response) const;
 };
 
 }  // namespace commands

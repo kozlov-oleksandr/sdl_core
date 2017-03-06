@@ -180,6 +180,9 @@ TEST_F(CommandRequestImplTest,
       app_mngr_,
       ManageMobileCommand(dummy_msg, Command::CommandOrigin::ORIGIN_SDL));
 
+  MockAppPtr app = CreateMockApp();
+  EXPECT_CALL(app_mngr_, application(_)).WillOnce(Return(app));
+
   command->onTimeOut();
 
   EXPECT_FALSE((*dummy_msg)[am::strings::msg_params][am::strings::info]
