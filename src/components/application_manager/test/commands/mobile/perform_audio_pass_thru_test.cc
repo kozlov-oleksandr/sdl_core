@@ -207,6 +207,7 @@ class PerformAudioPassThruRequestTest
     Event event_tts(hmi_apis::FunctionID::TTS_Speak);
     event_tts.set_smart_object(*msg_tts);
 
+
     command->on_event(event_tts);
 
     EXPECT_CALL(app_mngr_, EndAudioPassThrough()).WillOnce(Return(false));

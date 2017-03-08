@@ -226,7 +226,7 @@ void CommandRequestImpl::onTimeOut() {
                                             correlation_id(),
                                             mobile_api::Result::GENERIC_ERROR);
 
-  AddComponentInfoToMessage(response);
+  AddTimeOutComponentInfoToMessage(response);
 
   application_manager_.ManageMobileCommand(response, ORIGIN_SDL);
 }
@@ -781,7 +781,7 @@ const CommandParametersPermissions& CommandRequestImpl::parameters_permissions()
     const {
   return parameters_permissions_;
 }
-void CommandRequestImpl::AddComponentInfoToMessage(
+void CommandRequestImpl::AddTimeOutComponentInfoToMessage(
     smart_objects::SmartObjectSPtr& response) const {
   using NsSmartDeviceLink::NsSmartObjects::SmartObject;
   LOG4CXX_AUTO_TRACE(logger_);
