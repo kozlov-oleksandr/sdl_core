@@ -268,7 +268,7 @@ class AlertRequestTest : public CommandRequestTest<CommandsTestMocks::kIsNice> {
   NiceMock<MockHmiInterfaces> hmi_interfaces_;
 };
 
-TEST_F(AlertRequestTest, OnTimeout_GENERIC_ERROR) {
+TEST_F(AlertRequestTest, DISABLED_OnTimeout_GENERIC_ERROR) {
   PreConditions();
   MessageSharedPtr command_msg = CreateMessage(smart_objects::SmartType_Map);
   (*command_msg)[am::strings::msg_params][am::strings::result_code] =
