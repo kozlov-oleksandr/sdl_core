@@ -364,28 +364,6 @@ class SetGlobalPropertiesRequestTest
     command->Run();
   }
 
-  void SetHMIInterfaceState(const am::HmiInterfaces::InterfaceState ui_state,
-                            const am::HmiInterfaces::InterfaceState tts_state) {
-    ON_CALL(hmi_interfaces_,
-            GetInterfaceState(am::HmiInterfaces::HMI_INTERFACE_UI))
-        .WillByDefault(Return(ui_state));
-    ON_CALL(hmi_interfaces_,
-            GetInterfaceState(am::HmiInterfaces::HMI_INTERFACE_TTS))
-        .WillByDefault(Return(tts_state));
-  }
-
-  MessageSharedPtr PrepareResponseFromHMI(
-      const hmi_apis::Common_Result::eType result_code, const char* info) {
-    MessageSharedPtr msg = CreateMessage(smart_objects::SmartType_Map);
-    (*msg)[am::strings::params][am::hmi_response::code] = result_code;
-    (*msg)[am::strings::msg_params] =
-        smart_objects::SmartObject(smart_objects::SmartType_Map);
-    if (info) {
-      (*msg)[am::strings::msg_params][am::strings::info] = info;
-    }
-    return msg;
-  }
-
   void ResultCommandExpectations(MessageSharedPtr msg,
                                  const std::string& info) {
     EXPECT_EQ((*msg)[am::strings::msg_params][am::strings::success].asBool(),
