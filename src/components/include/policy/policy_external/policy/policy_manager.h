@@ -554,7 +554,6 @@ class PolicyManager : public usage_statistics::StatisticsManager {
    * condition is true.
    */
   virtual void StartPTExchange() = 0;
-
 };
 
 }  // namespace policy
