@@ -799,8 +799,10 @@ void CommandRequestImpl::EndAwaitForInterface(
   if (it != awaiting_response_interfaces_.end()) {
     awaiting_response_interfaces_.erase(it);
   } else {
-      LOG4CXX_WARN(logger_, "EndAwaitForInterface called on interface \
-                    which was not put into await state: " << interface_id);
+    LOG4CXX_WARN(logger_,
+                 "EndAwaitForInterface called on interface \
+                    which was not put into await state: "
+                     << interface_id);
   }
 }
 
@@ -837,9 +839,11 @@ std::string GetComponentNameFromInterface(
   }
 }
 
-std::string InfoInterfaceSeparator(const std::string& sum, const HmiInterfaces::InterfaceID& container_value) {
-    return sum.empty() ? GetComponentNameFromInterface(container_value) : sum + ", "
-                          + GetComponentNameFromInterface(container_value);
+std::string InfoInterfaceSeparator(
+    const std::string& sum, const HmiInterfaces::InterfaceID& container_value) {
+  return sum.empty()
+             ? GetComponentNameFromInterface(container_value)
+             : sum + ", " + GetComponentNameFromInterface(container_value);
 }
 
 void CommandRequestImpl::AddTimeOutComponentInfoToMessage(
@@ -848,17 +852,15 @@ void CommandRequestImpl::AddTimeOutComponentInfoToMessage(
   LOG4CXX_AUTO_TRACE(logger_);
 
   if (awaiting_response_interfaces_.empty()) {
-    LOG4CXX_ERROR(logger_,
-                 "No interfaces awaiting, info param is empty");
+    LOG4CXX_ERROR(logger_, "No interfaces awaiting, info param is empty");
     return;
   }
 
-  std::string not_responding_interfaces_string = std::accumulate(
-               awaiting_response_interfaces_.begin(),
-               awaiting_response_interfaces_.end(),
-               std::string(""),
-               InfoInterfaceSeparator
-               );
+  std::string not_responding_interfaces_string =
+      std::accumulate(awaiting_response_interfaces_.begin(),
+                      awaiting_response_interfaces_.end(),
+                      std::string(""),
+                      InfoInterfaceSeparator);
   LOG4CXX_DEBUG(
       logger_,
       "Not responding interfaces string: " << not_responding_interfaces_string);
