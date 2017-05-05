@@ -117,6 +117,10 @@ class PolicyManager : public usage_statistics::StatisticsManager {
                                 const RPCParams& rpc_params,
                                 CheckPermissionResult& result) = 0;
 
+  virtual void CheckPendingPermissionsChanges(
+      const std::string& policy_app_id,
+      const std::vector<FunctionalGroupPermission>& current_permissions) = 0;
+
   /**
    * @brief Clear all record of user consents. Used during Factory Reset.
    * @return bool Success of operation
