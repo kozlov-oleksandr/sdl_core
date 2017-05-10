@@ -123,6 +123,7 @@ const char* hours = "hours";
 const char* minutes = "minutes";
 const char* seconds = "seconds";
 const char* update_mode = "updateMode";
+const char* enable_seek = "enableSeek";
 const char* trigger_source = "triggerSource";
 const char* hmi_level = "hmiLevel";
 const char* activate_app_hmi_level = "level";
@@ -410,6 +411,7 @@ const char* policyfile = "policyfile";
 const char* is_active = "isActive";
 const char* is_deactivated = "isDeactivated";
 const char* event_name = "eventName";
+const char* enable_seek = "enable_seek";
 
 }  // namespace hmi_notification
 

@@ -45,6 +45,7 @@
 #include "mobile/on_driver_distraction_notification.h"
 #include "mobile/on_language_change_notification.h"
 #include "mobile/on_permissions_change_notification.h"
+#include "mobile/on_seek_media_clock_timer_notification.h"
 
 namespace test {
 namespace components {
@@ -86,6 +87,7 @@ typedef Types<commands::OnAppInterfaceUnregisteredNotification,
               commands::OnAudioPassThruNotification,
               commands::OnLanguageChangeNotification,
               commands::OnPermissionsChangeNotification,
+              commands::mobile::OnSeekMediaClockTimerNotification,
               commands::mobile::OnDriverDistractionNotification>
     NotificationCommandsList;
 
