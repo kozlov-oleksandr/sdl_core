@@ -255,8 +255,9 @@ class CommandRequestImpl : public CommandImpl,
    * interface that returns response
    * @param second contains result_code from HMI response and
    * interface that returns response.
-   * @return True, if the communication return code must be
-   * UNSUPPORTED_RESOURCE, otherwise false.
+   * @return if the communication return code must be
+   * UNSUPPORTED_RESOURCE, function returns true, else
+   * false
    */
   bool IsResultCodeUnsupported(const ResponseInfo& first,
                                const ResponseInfo& second) const;

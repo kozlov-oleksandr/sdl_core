@@ -797,7 +797,7 @@ TEST_F(MessageHelperTest, VerifyImageApplyPath_ImageTypeIsStatic_Success) {
       image, appSharedMock, mock_application_manager);
   // EXPECT
   EXPECT_EQ(mobile_apis::Result::SUCCESS, result);
-  EXPECT_EQ("icon.png", image[strings::value].asString());
+  EXPECT_EQ("icon.png", image[strings::value]);
 }
 
 TEST_F(MessageHelperTest, VerifyImageApplyPath_ImageValueNotValid_InvalidData) {
